@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: demo_project
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: MULTI
+    password: Test09061234
+    url: jdbc:oracle:thin:@multi0729_high?TNS_ADMIN=./src/main/resources/oracle
+        # ??? ????  :@(??? ??-????) ? ?? ?? ?? = .??
+
+  jpa: #???(??)
+    properties: # ??
+      hibernate: # ?? ???
+        format_sql: true # ?? ??? ?????
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create #
+    show-sql: true
