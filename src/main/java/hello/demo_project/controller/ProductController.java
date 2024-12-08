@@ -40,10 +40,8 @@ public class ProductController {
         return "redirect:list";
     }
 
+    //상품 수정(update)
 
-
-
-
-
+    //상품 삭제(delete)
 
 }
