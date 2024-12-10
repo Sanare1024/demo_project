@@ -7,8 +7,8 @@ import lombok.ToString;
 
 import java.util.Date;
 
+@Table(name = "TB_USER")
 @Entity
-@Table
 @NoArgsConstructor
 @Getter
 @ToString

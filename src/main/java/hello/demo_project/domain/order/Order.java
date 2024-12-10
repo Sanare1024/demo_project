@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.util.Date;
 
 @Entity
-@Table
+@Table(name = "TB_ORDER")
 @NoArgsConstructor
 @Getter
 @ToString
@@ -28,6 +28,7 @@ public class Order {
     private String address; //받는분 주소
     private String addressDetail; //주소 뒤 상세주소
     private String message; //주문 요청사항
-    private String status; //주문 상태
+    @Enumerated(EnumType.STRING)
+    private Status status; //주문 상태
     private Date order_Created_Date; //주문 날짜
 }

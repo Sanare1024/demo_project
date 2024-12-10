@@ -10,5 +10,15 @@ import jakarta.validation.constraints.NotNull;
 public class ProductReq {
     @NotNull
     private String name;
+    @NotNull
+    private long price;
+    @NotNull
+    private long scope_Avg;
+    @NotNull
+    private String image_path;
+    @NotNull
+    private long product_TypeId;
+    @NotNull
+    private long stock;
 
 }
