@@ -30,4 +30,13 @@ public class Product {
         this.product_TypeId = product_TypeId;
         this.stock = stock;
     }
+
+    public void updateProduct(String name, long price, long scope_Avg, String image_Path, long product_TypeId, long stock) {
+        this.name = name;
+        this.price = price;
+        this. scope_Avg = scope_Avg;
+        this.image_path = image_Path;
+        this.product_TypeId = product_TypeId;
+        this.stock = stock;
+    }
 }

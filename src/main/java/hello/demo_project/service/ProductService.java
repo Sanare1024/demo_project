@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductDto getProduct(long id) throws DataNotFoundException {
-        Product product =productRepository.getProductsByProductId(id)
+    public ProductDto getProduct(long productId) throws DataNotFoundException {
+        Product product =productRepository.getProductByProductId(productId)
                 .orElseThrow(() -> new DataNotFoundException("product not found"));
 
         log.info("product : {}", product);
@@ -45,5 +44,16 @@ public class ProductService {
 
     public void addProduct(ProductReq req) {
         Product product = new Product(req.getName(), req.getPrice(), req.getScope_Avg(), req.getImage_path(), req.getProduct_TypeId(), req.getStock());
+        productRepository.save(product);
+    }
+
+    public void updateProduct(long productId, ProductReq req) {
+        Product product = productRepository.findProductByProductId(productId);
+        product.updateProduct(req.getName(), req.getPrice(), req.getScope_Avg(), req.getImage_path(), req.getProduct_TypeId(), req.getStock());
+        productRepository.save(product);
+    }
+
+    public void deleteProduct(long productId) {
+        productRepository.deleteById(productId);
     }
 }

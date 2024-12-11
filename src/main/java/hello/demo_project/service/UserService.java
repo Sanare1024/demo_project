@@ -1,5 +1,10 @@
 package hello.demo_project.service;
 
+import hello.demo_project.domain.user.User;
+import hello.demo_project.domain.user.UserDto;
+import hello.demo_project.domain.user.UserRepository;
+import hello.demo_project.domain.user.UserReq;
+import hello.demo_project.exception.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,5 +14,35 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
+    private final UserRepository userRepository;
 
+    public void createUser(UserReq userReq) {
+        User user = new User(userReq.getId(), userReq.getPassword(), userReq.getName(), userReq.getPhoneNumber(),
+                userReq.getRole(), userReq.getPoint(), userReq.getCreate_at(), userReq.is_deleted());
+        userRepository.save(user);
+    }
+
+    public UserDto getUser(long userId) throws DataNotFoundException {
+        User user = userRepository.getUserByUserId(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        log.info("User : {}", user);
+
+        return new UserDto(user.getMemberId(), user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(),
+                user.getRole(), user.getPoint(), user.getCreate_at(), user.is_deleted());
+    }
+
+
+    public void updateUser(long userId, UserReq userReq) {
+        User user = userRepository.findUserByUserId(userId);
+        user.updateUser(userReq.getId(), userReq.getPassword(), userReq.getName(), userReq.getPhoneNumber(), userReq.getRole(),
+                 userReq.getPoint(), userReq.getCreate_at(), userReq.is_deleted());
+        userRepository.save(user);
+    }
+
+    public void deleteUser(long userId) {
+        User user = userRepository.findUserByUserId(userId);
+        user.updateUser(user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(),
+                user.getRole(), user.getPoint(), user.getCreate_at(), false);
+        userRepository.save(user);
+    }
 }

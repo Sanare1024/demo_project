@@ -17,8 +17,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId; //주문번호키
     private long order_UserId; //주문한 회원키
-//  private long franchiseId; //가맹점 번호
-    private String order_userName; //주문자 성함
     private String productName; //상품이름
     private String payment_Method_type; //결제수단
     private long totalPrice; //총금액

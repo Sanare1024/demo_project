@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductDto { //프러덕트랑 일치함 /
+public class ProductDto { //프러덕트랑 일치함
     private long productId;
     private String name;
     private long price;

@@ -51,11 +51,31 @@ public class ProductController {
     }
 
     //상품 수정(update)
+    @GetMapping("/update/{productId}")
+    public String updateProduct(@PathVariable long productId, Model model) throws DataNotFoundException {
+        ProductDto productDto = productService.getProduct(productId);
+        ProductReq productReq = new ProductReq(productDto.getName(), productDto.getPrice(), productDto.getScope_Avg(), productDto. getImage_path()
+                , productDto.getProduct_TypeId(), productDto.getStock());
+        model.addAttribute("productReq", productReq);
+
+        return "product/updateForm";
+    }
+
+    @PostMapping("/update/{productId}")
+    public String updateProduct(@PathVariable long productId, @ModelAttribute ProductReq req) {
+        productService.updateProduct(productId, req);
+        return "redirect:/product/{productId}";
+    }
 
     //상품 삭제(delete)
+    @GetMapping("/delete/{productId}") //D
+    public String deleteProduct(@PathVariable long productId) {
+        log.info("productId ={}",productId);
+        productService.deleteProduct(productId);
+        return "redirect:/product/list";
+    }
 
     //상품의 리뷰를 확인하고 평균 별점 계산
-
     //
 
 }
