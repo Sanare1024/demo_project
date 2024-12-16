@@ -21,7 +21,6 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
-    private final CartRepository cartRepository;
 
     // 장바구니 자체 목록조회
     // 회원번호로 된 장바구니 확인 -> 확인된걸 리스트로 가져오기
