@@ -1,18 +1,23 @@
 package hello.demo_project.service;
 
+import hello.demo_project.connection.KakaoApi;
 import hello.demo_project.domain.cart.CartRepository;
 import hello.demo_project.domain.order.Order;
 import hello.demo_project.domain.order.OrderRepository;
 import hello.demo_project.domain.order.OrderReq;
+import hello.demo_project.domain.product.OrderProduct;
 import hello.demo_project.domain.product.Product;
 import hello.demo_project.domain.product.ProductRepository;
-import hello.demo_project.domain.user.User;
 import hello.demo_project.domain.user.UserRepository;
 import hello.demo_project.exception.DataNotFoundException;
 import hello.demo_project.exception.OutOfStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,30 +26,79 @@ public class OrderService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final KakaoApi kakaoApi;
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
 
-    public void createOrder(OrderReq orderReq) throws DataNotFoundException, OutOfStockException {
-        /*//주문의 유저
-        User user = userRepository.getUserByUserId(orderReq.getOrderUserId())
+    /***
+     *     카카오 API의 동작 순서
+     *     사용자 주문 요청 -> KJUN 서버 -> 주문 가격 계산
+     */
+
+    @Transactional
+    public String createOrder(OrderReq orderReq) throws DataNotFoundException, OutOfStockException {
+        userRepository.getUserByMemberId(orderReq.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("user not found"));
-        log.info("user : {}", user); */
 
         //주문 상품
-        Product product = productRepository.getProductByProductId(orderReq.getProductId())
-                .orElseThrow(() -> new DataNotFoundException("product not found"));
-
-        if (orderReq.getProductQuantity() > product.getStock()){ //
-            throw new OutOfStockException("물품 재고 부족");
+        long price = 0;
+        for (OrderProduct orderProduct : orderReq.getProductList()) {
+            Product product = productRepository.getProductByProductId(orderProduct.getId())
+                    .orElseThrow(() -> new DataNotFoundException("product not found"));
+            price += product.getPrice() * orderProduct.getQuantity();
+            if (orderProduct.getQuantity() > product.getStock()){ //
+                throw new OutOfStockException("물품 재고 부족");
+            }
         }
-
-        Order order = new Order(orderReq.getOrderUserId(), orderReq.getProductId(), orderReq.getProductQuantity());
-
-        orderRepository.save(order);
+        //사용자의 주문 가격을 전부 더하고 카카오에게 전달하시오
+        return kakaoApi.payStart(price); //주문번호를 돌려줄거임 ㅋㅋ
     }
 
-    public void buySelectedProduct(Long productsId, long userId) {
+    /***
+     *      (LOOP)
+     *      사용자 웹페이지 (카카오 결제 했는지 확인) -> KJUN 서버
+     *      (LOOP)
+     */
+    public String confirmOrder(String orderId) {
+        return kakaoApi.payConfirm(orderId).getBody();
+    }
 
+    //요구사항
+    //사용자의 니즈
+    //사용자의 생각 또는 개발자의 생각을 코드로 풀어내는것
+    //    사용자 웹페이지 -> Success
+    @Transactional
+    public void completeOrder(OrderReq orderReq, String orderId) throws DataNotFoundException, OutOfStockException {
+        userRepository.getUserByMemberId(orderReq.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("user not found"));
+        for (OrderProduct orderProduct : orderReq.getProductList()) {
+            Product product = productRepository.getProductByProductId(orderProduct.getId())
+                    .orElseThrow(() -> new DataNotFoundException("product not found"));
+
+            if (orderProduct.getQuantity() > product.getStock()) { //
+                throw new OutOfStockException("물품 재고 부족");
+            }
+            Order order = new Order(
+                    orderReq.getUserId(),
+                    orderProduct.getId(),
+                    orderProduct.getQuantity(),
+                    orderId,
+                    orderReq.getPostCode(),
+                    orderReq.getAddress(),
+                    orderReq.getAddressDetail(),
+                    orderReq.getMessage(),
+                    "KAKAO"
+            );
+            orderRepository.save(order);
+            product.buy(orderProduct.getQuantity());
+            productRepository.save(product);
+        }
+        List<Long> productIds = new ArrayList<>();
+        for (OrderProduct o : orderReq.getProductList()) {
+            productIds.add(o.getId());
+        }
+        cartRepository.deleteCartByProductIdInAndUserId(productIds, orderReq.getUserId());
+        kakaoApi.payComplete();
     }
 
 

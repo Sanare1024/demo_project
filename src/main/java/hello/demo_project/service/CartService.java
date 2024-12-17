@@ -41,7 +41,7 @@ public class CartService {
 
     public void addCart(CartReq cartReq) throws DataNotFoundException, OutOfStockException {
         // 카트의 유저
-        User user = userRepository.getUserByUserId(cartReq.getUserId())
+        User user = userRepository.getUserByMemberId(cartReq.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("user not found"));
         log.info("user : {}", user);
 

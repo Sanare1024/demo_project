@@ -7,7 +7,9 @@ import hello.demo_project.exception.OutOfStockException;
 import hello.demo_project.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,35 +30,41 @@ public class OrderController {
     //     만약 재고가 없으면? -> out of stock 하고 주문 자체를 취소해야함(묶여 있는 전체 주문 전부 다)
     // [3]전부다 재고가 있으면 주문 가능!
     // [4]배송지 입력
+
     // 쿠폰 사용 여부 확인, 포인트 사용 여부 확인 -> 총금액 결산
     // 결제 확인 - 어려움(ex 삼성페이 웹페이지에 qr뜸 //여기부터 내가 하는거아미-> 폰으로 qr을 찍음 -> 폰에 )
     // 위에 과정 전부다 통과하면? 주문 성공
 
+    //스프링강의에서 아주 조금이라도 기능을 모르겠는건 검색, 그래도 모르겠는건 나한테 질문.
+
     // 구현해야하는 기능
     // [1] 장바구니에서 체크해서 구매하기로한 물품 받아오기(주문 제품 조회) -주문 시작
-    @PostMapping("/createOrder/{}")
-    public String createOrder (@ModelAttribute OrderReq orderReq) throws DataNotFoundException, OutOfStockException {
-        orderService.createOrder(orderReq);
+    @PostMapping
+    public String createOrder (@ModelAttribute OrderReq orderReq, Model model) throws DataNotFoundException, OutOfStockException {
+        String orderId = orderService.createOrder(orderReq);
+        //주문 가격 계산
+        //주문 SAVE
+        //카카오에 통신해서 결제 시작한다고 알리기
+        //카카오에게 주문번호 받기.
+        model.addAttribute("orderId", orderId);
+        //내주문을 생성하고 나오는 무언가~? 결제 번호 -> QR 프론트에서 생성하기 위해서 결제 번호 줘야할듯?
         return "order/checkStock";
     }
 
+    //QR == 바코드
 
-
-    // 리스트로 체크된 제품들 받아서 구매하는 기능
-    @PostMapping("/buyItems/{ProductIds}")
-    public String buyItems(@PathVariable List<Long> productsIds, @PathVariable long userId) { //체크된 아이템 리스트로 받고
-        for (Long productsId: productsIds) { // 개별 하나하나씩 구매
-            orderService.buySelectedProduct(productsId, userId);
-        }
-        return "order/orderComplete"; // 주문 완료 페이지로 보내기
+    @GetMapping("/{orderId}") //?sex~
+    @ResponseBody
+    public ResponseEntity<String> confirmOrder (@PathVariable String orderId) {
+        String res = orderService.confirmOrder(orderId);
+        //주문 확인
+        return ResponseEntity.ok(res);
     }
 
+
     // 단일 상품 구매 기능
-
-
-    //기존 배송지사용
-
-    //신규 배송지 입력
+    // 기존 배송지사용
+    // 신규 배송지 입력
 
     // 상품 주문 성공시 주문 상품 재고 감소 기능
 
@@ -65,13 +73,15 @@ public class OrderController {
     // 결제 관련 api
     // 결제 api  어떻게 할건지....
     // 카카오 api 와 일반결제 api 생각하고는 있는데
-    public String credit () {
-        //todo 카카오 or 일반 결제 api 연결
-        return "";
+
+
+    //넣어준다.
+    //누가? 스프링 프레임워크
+    //스프링 프레임 워크가 넣어주는 애들이 뭐였더라.
+    //Bean 등록의 철학만 가져온거라고 보면됨
+    @PostMapping("/order/{orderId}")
+    public String completeOrder (@ModelAttribute OrderReq orderReq, @PathVariable String orderId) throws DataNotFoundException, OutOfStockException {
+        orderService.completeOrder(orderReq, orderId);
+        return "cart";
     }
-
-
-
-
-
 }

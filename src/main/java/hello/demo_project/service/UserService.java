@@ -22,8 +22,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDto getUser(long userId) throws DataNotFoundException {
-        User user = userRepository.getUserByUserId(userId)
+    public UserDto getUser(long memberId) throws DataNotFoundException {
+        User user = userRepository.getUserByMemberId(memberId)
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
         log.info("User : {}", user);
 
@@ -32,15 +32,15 @@ public class UserService {
     }
 
 
-    public void updateUser(long userId, UserReq userReq) {
-        User user = userRepository.findUserByUserId(userId);
+    public void updateUser(long memberId, UserReq userReq) {
+        User user = userRepository.findUserByMemberId(memberId);
         user.updateUser(userReq.getId(), userReq.getPassword(), userReq.getName(), userReq.getPhoneNumber(), userReq.getRole(),
                  userReq.getPoint(), userReq.getCreate_at(), userReq.is_deleted());
         userRepository.save(user);
     }
 
-    public void deleteUser(long userId) {
-        User user = userRepository.findUserByUserId(userId);
+    public void deleteUser(long memberId) {
+        User user = userRepository.findUserByMemberId(memberId);
         user.updateUser(user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(),
                 user.getRole(), user.getPoint(), user.getCreate_at(), false);
         userRepository.save(user);

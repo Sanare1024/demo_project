@@ -1,5 +1,6 @@
 package hello.demo_project.domain.product;
 
+import hello.demo_project.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,5 +39,12 @@ public class Product {
         this.image_path = image_Path;
         this.product_TypeId = product_TypeId;
         this.stock = stock;
+    }
+
+    public void buy(long stock) throws OutOfStockException {
+        this.stock -= stock;
+        if(this.stock < 0) {
+            throw new OutOfStockException("");
+        }
     }
 }

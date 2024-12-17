@@ -15,4 +15,6 @@ public interface CartRepository extends JpaRepository <Cart, Long>{
     Cart findCartByCartId(long cartId);
 
     Optional<Cart> findCartByUserIdAndProductId(long userId, long productId); //카트의 원소단위가 아니라
+
+    void deleteCartByProductIdInAndUserId(List<Long> productId, long userId);
 }

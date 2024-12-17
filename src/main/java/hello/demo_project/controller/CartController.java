@@ -78,7 +78,7 @@ public class CartController {
     // dataNotFound 가 들어가는게 맞나? 존재 확실한 물품들 + 카트들의 합계를 내는건데..?
     // 그리고 이 계산이 내 생각에는 update 나 새로 추가 할때마다 무조건 발동해서 실시간으로 합계가 바뀌는걸려고 하는데
     // 그럼 어떻게 해줘야 위에 상황에서 항상 실행되지?
-    @GetMapping("/calculateSum/{userId}}")
+    @GetMapping("/calculateSum/{userId}")
     public String calculateSum(@PathVariable long userId, Model model) throws DataNotFoundException {
         long sum = cartService.calculateSum(userId);
         model.addAttribute("Sum", sum);
