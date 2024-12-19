@@ -13,12 +13,14 @@ import java.util.Date;
 @Setter
 public class OrderDto {
 
-    private long orderId;
+    private long orderNumber;
+    private String orderId;
     private long orderUserId;
     private long productId;
 //  private String productName;
     private long productQuantity;
     //배송관련
+    private String kakaoOrderId;
     private String gift_User_Name;
     private long postCode;
     private String address;

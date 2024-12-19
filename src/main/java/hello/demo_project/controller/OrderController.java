@@ -41,22 +41,22 @@ public class OrderController {
     // [1] 장바구니에서 체크해서 구매하기로한 물품 받아오기(주문 제품 조회) -주문 시작
     @PostMapping
     public String createOrder (@ModelAttribute OrderReq orderReq, Model model) throws DataNotFoundException, OutOfStockException {
-        String orderId = orderService.createOrder(orderReq);
+        String kakaoOrder_Id = orderService.createOrder(orderReq);
         //주문 가격 계산
         //주문 SAVE
         //카카오에 통신해서 결제 시작한다고 알리기
         //카카오에게 주문번호 받기.
-        model.addAttribute("orderId", orderId);
+        model.addAttribute("kakaoOrder_Id", kakaoOrder_Id);
         //내주문을 생성하고 나오는 무언가~? 결제 번호 -> QR 프론트에서 생성하기 위해서 결제 번호 줘야할듯?
         return "order/checkStock";
     }
 
     //QR == 바코드
 
-    @GetMapping("/{orderId}") //?sex~
+    @GetMapping("/{kakaoOrder_Id}") //?sex~
     @ResponseBody
-    public ResponseEntity<String> confirmOrder (@PathVariable String orderId) {
-        String res = orderService.confirmOrder(orderId);
+    public ResponseEntity<String> confirmOrder (@PathVariable String kakaoOrder_Id) {
+        String res = orderService.confirmOrder(kakaoOrder_Id);
         //주문 확인
         return ResponseEntity.ok(res);
     }
@@ -79,9 +79,9 @@ public class OrderController {
     //누가? 스프링 프레임워크
     //스프링 프레임 워크가 넣어주는 애들이 뭐였더라.
     //Bean 등록의 철학만 가져온거라고 보면됨
-    @PostMapping("/order/{orderId}")
-    public String completeOrder (@ModelAttribute OrderReq orderReq, @PathVariable String orderId) throws DataNotFoundException, OutOfStockException {
-        orderService.completeOrder(orderReq, orderId);
+    @PostMapping("/order/{kakaoOrder_Id}")
+    public String completeOrder (@ModelAttribute OrderReq orderReq, @PathVariable String kakaoOrder_Id) throws DataNotFoundException, OutOfStockException {
+        orderService.completeOrder(orderReq, kakaoOrder_Id);
         return "cart";
     }
 }

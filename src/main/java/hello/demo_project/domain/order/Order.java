@@ -16,7 +16,8 @@ import java.util.Date;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long orderId; //주문번호키
+    private long orderNumber;
+    private String orderId; //주문번호키
     private long orderUserId; //주문한 회원키
     private long productId; //상품키
     //  private String productName; //상품이름 - DB에 저장하면서까지 가져가야하는것인가? 내 생각에 아님 지워도 무방함
@@ -42,6 +43,19 @@ public class Order {
     }
 
     public Order(long orderUserId, long productId, long productQuantity, String kakaoOrderId, long postCode, String address, String addressDetail, String message, String paymentMethod) {
+        this.orderUserId = orderUserId;
+        this.productId = productId;
+        this.productQuantity = productQuantity;
+        this.kakaoOrderId = kakaoOrderId;
+        this.postCode = postCode;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.message = message;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Order(String orderId, long orderUserId, long productId, long productQuantity, String kakaoOrderId, long postCode, String address, String addressDetail, String message, String paymentMethod) {
+        this.orderId = orderId;
         this.orderUserId = orderUserId;
         this.productId = productId;
         this.productQuantity = productQuantity;

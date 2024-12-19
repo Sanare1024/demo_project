@@ -18,7 +18,7 @@ public class KakaoApi {
 //         RestClient.RequestBodySpec response = restClient.post().body(access_token)
 //                 .header("Content-Type", "application/json");
         //response -> "test_order_id"
-        return "test_order_id";
+        return "test_kakaoOrder_Id";
     };
 
     public ResponseEntity<String> payConfirm(String orderId){//야 사용자가 결제 했냐?
@@ -28,7 +28,7 @@ public class KakaoApi {
 //
 //        RestClient.RequestBodySpec response = restClient.post().body(access_token)
 //                .header("Content-Type", "application/json");
-        return ResponseEntity.ok("test_order_id");
+        return ResponseEntity.ok("test_kakaoOrder_Id");
     }
 
     public ResponseEntity<String> payComplete(){//ㅇㅋ 나도 결제 승인~

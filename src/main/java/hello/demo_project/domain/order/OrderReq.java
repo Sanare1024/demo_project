@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class OrderReq {
-
+    private String orderId;
     private long userId; //주문한 회원키
     private List<OrderProduct> productList;
     //배송관련

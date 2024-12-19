@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +52,7 @@ public class OrderService {
                 throw new OutOfStockException("물품 재고 부족");
             }
         }
+
         //사용자의 주문 가격을 전부 더하고 카카오에게 전달하시오
         return kakaoApi.payStart(price); //주문번호를 돌려줄거임 ㅋㅋ
     }
@@ -59,8 +62,8 @@ public class OrderService {
      *      사용자 웹페이지 (카카오 결제 했는지 확인) -> KJUN 서버
      *      (LOOP)
      */
-    public String confirmOrder(String orderId) {
-        return kakaoApi.payConfirm(orderId).getBody();
+    public String confirmOrder(String kakaoOrder_Id) {
+        return kakaoApi.payConfirm(kakaoOrder_Id).getBody();
     }
 
     //요구사항
@@ -68,9 +71,12 @@ public class OrderService {
     //사용자의 생각 또는 개발자의 생각을 코드로 풀어내는것
     //    사용자 웹페이지 -> Success
     @Transactional
-    public void completeOrder(OrderReq orderReq, String orderId) throws DataNotFoundException, OutOfStockException {
+    public void completeOrder(OrderReq orderReq, String kakaoOrder_Id) throws DataNotFoundException, OutOfStockException {
         userRepository.getUserByMemberId(orderReq.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("user not found"));
+
+
+
         for (OrderProduct orderProduct : orderReq.getProductList()) {
             Product product = productRepository.getProductByProductId(orderProduct.getId())
                     .orElseThrow(() -> new DataNotFoundException("product not found"));
@@ -78,17 +84,22 @@ public class OrderService {
             if (orderProduct.getQuantity() > product.getStock()) { //
                 throw new OutOfStockException("물품 재고 부족");
             }
-            Order order = new Order(
+
+
+
+
+            Order order = checkOrder.orElse(new Order(
+                    UUID.randomUUID().toString(),
                     orderReq.getUserId(),
                     orderProduct.getId(),
                     orderProduct.getQuantity(),
-                    orderId,
+                    kakaoOrder_Id,
                     orderReq.getPostCode(),
                     orderReq.getAddress(),
                     orderReq.getAddressDetail(),
                     orderReq.getMessage(),
                     "KAKAO"
-            );
+            ));
             orderRepository.save(order);
             product.buy(orderProduct.getQuantity());
             productRepository.save(product);
