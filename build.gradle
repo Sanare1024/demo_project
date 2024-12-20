@@ -21,6 +21,9 @@ configurations {
 
 repositories {
     mavenCentral()
+
+    maven { url 'https://jitpack.io' }
+
 }
 
 dependencies {
@@ -43,6 +46,8 @@ dependencies {
     implementation 'com.oracle.database.security:osdt_cert:21.16.0.0' //인증서 관련된 라이브러리
     implementation 'com.oracle.database.security:oraclepki:23.6.0.24.10' // pki(공개키) 관련된 라이브러리
     implementation 'com.oracle.database.security:osdt_core:21.5.0.0' //위에 2개를 다루기 위한 코어
+
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 }
 
 tasks.named('test') {

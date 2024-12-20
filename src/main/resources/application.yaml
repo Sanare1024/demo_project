@@ -16,3 +16,9 @@ spring:
     hibernate:
       ddl-auto: create #
     show-sql: true
+
+imp:
+  code: imp63645133
+  api:
+    key: 2780380334842473
+    secretkey: s5CmtLMy8de8aMye10eOT8ff0g7nAHCECvzWvF2rHRUjGO0y5CwxX5gkXZV0MxeviQa0uS8SCNmTGuIW

@@ -1,7 +1,6 @@
 package hello.demo_project.controller;
 
 import hello.demo_project.domain.order.OrderReq;
-import hello.demo_project.domain.product.Product;
 import hello.demo_project.exception.DataNotFoundException;
 import hello.demo_project.exception.OutOfStockException;
 import hello.demo_project.service.OrderService;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,7 +51,7 @@ public class OrderController {
 
     //QR == 바코드
 
-    @GetMapping("/{kakaoOrder_Id}") //?sex~
+    @GetMapping("/{kakaoOrder_Id}")
     @ResponseBody
     public ResponseEntity<String> confirmOrder (@PathVariable String kakaoOrder_Id) {
         String res = orderService.confirmOrder(kakaoOrder_Id);

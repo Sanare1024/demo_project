@@ -74,8 +74,7 @@ public class OrderService {
     public void completeOrder(OrderReq orderReq, String kakaoOrder_Id) throws DataNotFoundException, OutOfStockException {
         userRepository.getUserByMemberId(orderReq.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("user not found"));
-
-
+        String orderId = UUID.randomUUID().toString();
 
         for (OrderProduct orderProduct : orderReq.getProductList()) {
             Product product = productRepository.getProductByProductId(orderProduct.getId())
@@ -85,11 +84,8 @@ public class OrderService {
                 throw new OutOfStockException("물품 재고 부족");
             }
 
-
-
-
-            Order order = checkOrder.orElse(new Order(
-                    UUID.randomUUID().toString(),
+            Order order = new Order(
+                    orderId,
                     orderReq.getUserId(),
                     orderProduct.getId(),
                     orderProduct.getQuantity(),
@@ -99,7 +95,8 @@ public class OrderService {
                     orderReq.getAddressDetail(),
                     orderReq.getMessage(),
                     "KAKAO"
-            ));
+            );
+
             orderRepository.save(order);
             product.buy(orderProduct.getQuantity());
             productRepository.save(product);

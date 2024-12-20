@@ -42,18 +42,6 @@ public class Order {
         this.productQuantity = productQuantity;
     }
 
-    public Order(long orderUserId, long productId, long productQuantity, String kakaoOrderId, long postCode, String address, String addressDetail, String message, String paymentMethod) {
-        this.orderUserId = orderUserId;
-        this.productId = productId;
-        this.productQuantity = productQuantity;
-        this.kakaoOrderId = kakaoOrderId;
-        this.postCode = postCode;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.message = message;
-        this.paymentMethod = paymentMethod;
-    }
-
     public Order(String orderId, long orderUserId, long productId, long productQuantity, String kakaoOrderId, long postCode, String address, String addressDetail, String message, String paymentMethod) {
         this.orderId = orderId;
         this.orderUserId = orderUserId;
