@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "paymentOrder")
-public class Payment {
+public class PaymentOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long paymentId;
+    Long paymentOrderId;
     Long productId;
     String productName;
     int price;

@@ -1,4 +1,4 @@
-package com.min9805.payment.controller;
+package hello.demo_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

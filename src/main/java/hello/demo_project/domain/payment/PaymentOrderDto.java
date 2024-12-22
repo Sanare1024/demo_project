@@ -3,7 +3,7 @@ package hello.demo_project.domain.payment;
 import lombok.Getter;
 
 @Getter
-public class PaymentDto {
+public class PaymentOrderDto {
 
     Long productId;
     String productName;
@@ -12,8 +12,8 @@ public class PaymentDto {
     String impUid;
     String merchantUid;
 
-    public Payment toEntity() {
-        return Payment.builder()
+    public PaymentOrder toEntity() {
+        return PaymentOrder.builder()
                 .productId(productId)
                 .productName(productName)
                 .price(price)
