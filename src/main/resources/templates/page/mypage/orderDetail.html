@@ -1,10 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{../common/layout/layout}"
+        layout:fragment="content"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>쿠폰</title>
+    <link th:href="@{/css/orderDetails.css}" rel="stylesheet">
 </head>
 <body>
-$END$
+<!-- 헤더 -->
+<header class="header">
+    <nav class="nav">
+    </nav>
+</header>
+
+<!-- 전체 컨테이너 -->
+<div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <ul>
+            <li><strong>나의 주문</strong></li>
+            <li><a href="orderDetails">주문/배송 조회</a></li>
+            <li><a href="orderReturn">취소/교환/반품 조회</a></li>
+            <li><strong>나의 혜택</strong></li>
+            <li><a href="coupon">나의 쿠폰</a></li>
+            <li><a href="membership">회원등급</a></li>
+            <li><a href="point">포인트 현황</a></li>
+            <li><strong>나의 활동</strong></li>
+            <li><a href="reviews">나의 리뷰</a></li>
+            <li><a href="qna">상품 Q&A</a></li>
+            <li><a href="inquiries">문의사항</a></li>
+            <li><a href="wishlist">위시리스트</a></li>
+            <li><a href="gift">선물함</a></li>
+            <li><strong>나의 정보</strong></li>
+            <li><a href="editProfile">회원정보 수정</a></li>
+            <li><a href="editMyProfile">나의프로필 수정</a></li>
+            <li><a href="address">배송지 관리</a></li>
+            <li><a href="accountDelete">회원탈퇴</a></li>
+            <li>
+                <a href="cs"><strong>고객센터</strong></a>
+            </li>
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <h2>주문/배송 조회</h2>
+        <hr>
+
+        <!-- 상태 표시 섹션 -->
+        <div class="status-section">
+            <div class="status">
+                <span class="status-number" id="statusOrderReceived">0</span>
+                <span class="status-label">주문접수</span>
+            </div>
+            <span class="arrow">></span> <!-- 화살표 추가 -->
+            <div class="status">
+                <span class="status-number" id="statusPaymentComplete">0</span>
+                <span class="status-label">결제완료</span>
+            </div>
+            <span class="arrow">></span> <!-- 화살표 추가 -->
+            <div class="status">
+                <span class="status-number" id="statusPreparing">0</span>
+                <span class="status-label">배송준비중</span>
+            </div>
+            <span class="arrow">></span> <!-- 화살표 추가 -->
+            <div class="status">
+                <span class="status-number" id="statusShipping">0</span>
+                <span class="status-label">배송중</span>
+            </div>
+            <span class="arrow">></span> <!-- 화살표 추가 -->
+            <div class="status">
+                <span class="status-number" id="statusDelivered">0</span>
+                <span class="status-label">배송완료</span>
+            </div>
+        </div>
+
+        <hr>
+        <div class="filter-section">
+            <label for="yearFilter">구매 기간:</label>
+            <select id="yearFilter">
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2022">2021</option>
+                <option value="2022">2020</option>
+                <option value="2022">2019</option>
+            </select>
+            <button onclick="filterOrders()">조회</button>
+        </div>
+        <table class="order-table">
+            <thead>
+            <tr>
+                <th>주문일자</th>
+                <th>상품</th>
+                <th>수량</th>
+                <th>주문금액</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody id="orderTableBody">
+            <!-- 주문 내역 데이터 -->
+            </tbody>
+        </table>
+        <div id="noOrdersContainer" class="no-orders-container">
+            <div class="no-orders-icon">!</div>
+            <p class="no-orders-text">기간 내 주문내역이 없습니다</p>
+        </div>
 </body>
 </html>
