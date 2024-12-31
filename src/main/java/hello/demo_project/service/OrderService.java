@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -105,8 +104,10 @@ public class OrderService {
         for (OrderProduct o : orderReq.getProductList()) {
             productIds.add(o.getId());
         }
-        cartRepository.deleteCartByProductIdInAndUserId(productIds, orderReq.getUserId());
-        kakaoApi.payComplete();
+
+        cartRepository.deleteCartByProductIdInAndUserId(productIds, orderReq.getUserId()); // 장바구니 초기화
+
+        kakaoApi.payComplete(); //결제 끝
     }
 
 

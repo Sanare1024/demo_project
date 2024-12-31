@@ -26,7 +26,7 @@ public class ProductService {
         log.info("product : {}", product);
 
         return new ProductDto(product.getProductId(), product.getName(), product.getPrice(), product.getScope_Avg(),
-                product.getImage_path(), product.getProduct_TypeId(), product.getStock());
+                product.getImage_path(), product.getProductTypeId(), product.getStock());
     }
 
     public List<ProductDto> getProductList() {
@@ -35,7 +35,7 @@ public class ProductService {
         List<ProductDto> productDtos = new ArrayList<>();
         for (Product product : products) {
             productDtos.add(new ProductDto(product.getProductId(), product.getName(),product.getPrice(), product.getScope_Avg(),
-                    product.getImage_path(), product.getProduct_TypeId(), product.getStock()));
+                    product.getImage_path(), product.getProductTypeId(), product.getStock()));
         }
 
         return productDtos;

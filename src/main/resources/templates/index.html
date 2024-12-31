@@ -35,10 +35,12 @@
             pg: pg,
             pay_method: payMethod,
             merchant_uid: '212R3A11TD233AAD', // 주문번호 생성
-            name: '상품1',
+            name: '상품1', //상품이름
             amount: 100, // 결제 가격
             buyer_name: '김민규',
-            buyer_tel: '010-1234-5678'
+            buyer_tel: '010-1234-5678',
+            buyer_addr: "서울특별시 강남구 신사동",// 구매자 주소지
+            buyer_postcode: "01181", // 구매자 우편번호
         }, function(rsp) {
             console.log(rsp)
             if (rsp.success) {
@@ -51,6 +53,13 @@
                     if (order.price == data.response.amount) {
                         order.impUid = rsp.imp_uid;
                         order.merchantUid = rsp.merchant_uid;
+
+                        order.paymentMethodType = rsp.pay_method;
+                        order.bankCode = rsp.bank_code;
+                        order.bankName = rsp.bank_name;
+                        order.paidAt = new Date(rsp.paid_at * 1000);
+                        order.status = rsp.status;
+
                         // 결제 금액 일치. 결제 성공 처리
                         $.ajax({
                             url: "api/v1/payment/order",
@@ -67,11 +76,11 @@
                             msg += '카드 승인번호 : ' + rsp.apply_num;
                             alert(msg);
                         }).catch(function(error) {
-                            alert("주문정보 저장을 실패 했습니다.");
+                            alert("망취소");
                         });
                     }
                 }).catch(function(error) {
-                    alert('결제에 실패하였습니다. ' + rsp.error_msg);
+                    alert('망취소' + rsp.error_msg);
                 });
             } else {
                 alert(rsp.error_msg);
