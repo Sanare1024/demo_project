@@ -1,6 +1,10 @@
 package hello.demo_project.controller;
 
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import hello.demo_project.domain.order.OrderReq;
+import hello.demo_project.domain.order.OrderResult;
 import hello.demo_project.exception.DataNotFoundException;
 import hello.demo_project.exception.OutOfStockException;
 import hello.demo_project.service.OrderService;
@@ -11,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -19,67 +25,47 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
-    // 프론트가 가져갈 기능인지 백에서 검증이 필요한 데이터인지 스스로 생각해서 구분할 수 있어야함
-    // 모르겠으면 안하지 말고 밑에 todo처럼 깡통만 만들어놓고 할 수 있는부분 부터 해놓아
+    //[0] 장바구니에서 물품담고 그 중 살거 체크박스 해서 구매하기 버튼 클릭 / cart부분
+    //[1] 주문페이지 - 여기서 기본오더 생성하고 배송지 입력, 상품리스트 보여줌,
+    //    -> 기본오더 생성하면서 재고 확인
+    // 결제방식 선택 + 포인트 사용, 쿠폰 선택 -> 총금액 xxxxxx원을 결제하기 버튼을 클릭
+    //[2] 포트원 api로 카카오페이나 이니시스 창이 뜸 -> 창보고 결제완료 / 결제가 완료되면서 orderhistory 생성
+    //[3] 결제가 완료되었습니다 창 (결제정보 좌라락)
+    //    -> 하면서 포트원 정보 받아와서 order완성 + 실제 제고 감소
 
-    // 기능 말고 대충 흐름
-    // [1]고객이 상품을 주문(물품 & 수량을 결정해서) // 장바구니에서 주문 버튼을 이용해서 주문 시작 (이떄 새 주문 생성)
-    // [2]주문량 만큼 물건이 있는지 확인 ()
-    //     만약 재고가 없으면? -> out of stock 하고 주문 자체를 취소해야함(묶여 있는 전체 주문 전부 다)
-    // [3]전부다 재고가 있으면 주문 가능!
-    // [4]배송지 입력
+    //카트에서 결제하기 누르면 실행
+    @GetMapping("/prepare")
+    public String prepareOrder (@ModelAttribute OrderReq orderReq/*여기 부분 꼬롬함*/, Model model) throws DataNotFoundException, OutOfStockException {
+        //ToDo 장바구니에서 체크한 제품리스트 받아와서 서비스에서 총금액 계산해서 orderDetail(지금은 index)에 넘기기
 
-    // 쿠폰 사용 여부 확인, 포인트 사용 여부 확인 -> 총금액 결산
-    // 결제 확인 - 어려움(ex 삼성페이 웹페이지에 qr뜸 //여기부터 내가 하는거아미-> 폰으로 qr을 찍음 -> 폰에 )
-    // 위에 과정 전부다 통과하면? 주문 성공
+        long totalPrice = orderService.createOrder(orderReq);
 
-    //스프링강의에서 아주 조금이라도 기능을 모르겠는건 검색, 그래도 모르겠는건 나한테 질문.
-
-    // 구현해야하는 기능
-    // [1] 장바구니에서 체크해서 구매하기로한 물품 받아오기(주문 제품 조회) -주문 시작
-    @PostMapping
-    public String createOrder (@ModelAttribute OrderReq orderReq, Model model) throws DataNotFoundException, OutOfStockException {
-        String kakaoOrder_Id = orderService.createOrder(orderReq);
-        //주문 가격 계산
-        //주문 SAVE
-        //카카오에 통신해서 결제 시작한다고 알리기
-        //카카오에게 주문번호 받기.
-        model.addAttribute("kakaoOrder_Id", kakaoOrder_Id);
-        //내주문을 생성하고 나오는 무언가~? 결제 번호 -> QR 프론트에서 생성하기 위해서 결제 번호 줘야할듯?
-        return "order/checkStock";
+        model.addAttribute("orderReq", orderReq);
+        model.addAttribute("totalPrice", totalPrice);
+        return "order/orderForm"; //
     }
 
-    //QR == 바코드
+    //결제 확인
+    @PostMapping("/validation/{imp_uid}")
+    public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+        log.info("imp_uid: {}", imp_uid);
+        log.info("validateIamport");
+        return orderService.validateIamport(imp_uid);
+    }
 
-    @GetMapping("/{kakaoOrder_Id}")
-    @ResponseBody
-    public ResponseEntity<String> confirmOrder (@PathVariable String kakaoOrder_Id) {
-        String res = orderService.confirmOrder(kakaoOrder_Id);
-        //주문 확인
-        return ResponseEntity.ok(res);
+    //결제 완료
+    @PostMapping("/donePayment")
+    public ResponseEntity<String> processOrder(@RequestBody OrderResult orderResult) { //내 니즈에 맞춰서 형태를 새로 만들어서
+        // 주문 정보를 로그에 출력
+        log.info("Received orders: {}", orderResult.toString());
+        // 성공적으로 받아들였다는 응답 반환
+        return ResponseEntity.ok(orderService.completeOrder(orderResult));
     }
 
 
-    // 단일 상품 구매 기능
-    // 기존 배송지사용
-    // 신규 배송지 입력
-
-    // 상품 주문 성공시 주문 상품 재고 감소 기능
-
-    // 장바구니에서 계산한 총 금액 + 배송비 - (쿠폰이나 포인트) 를 사용한 최종 금액 산출해 내기
-
-    // 결제 관련 api
-    // 결제 api  어떻게 할건지....
-    // 카카오 api 와 일반결제 api 생각하고는 있는데
-
-
-    //넣어준다.
-    //누가? 스프링 프레임워크
-    //스프링 프레임 워크가 넣어주는 애들이 뭐였더라.
-    //Bean 등록의 철학만 가져온거라고 보면됨
-    @PostMapping("/order/{kakaoOrder_Id}")
-    public String completeOrder (@ModelAttribute OrderReq orderReq, @PathVariable String kakaoOrder_Id) throws DataNotFoundException, OutOfStockException {
-        orderService.completeOrder(orderReq, kakaoOrder_Id);
-        return "cart";
+    //결제 취소
+    @PostMapping("/cancel/{imp_uid}")
+    public IamportResponse<Payment> cancelPayment(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+        return orderService.cancelPayment(imp_uid);
     }
 }
