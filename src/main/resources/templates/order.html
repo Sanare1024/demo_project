@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Page</title>
+    <!-- jQuery CDN 추가 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 아임포트 스크립트 추가 -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+
+<div class="content_main">
+    <div class="content_wrap">
+        <div class="address_wrap">
+            <form method="" action="">
+                <!-- 배송지 입력 부분 -->
+                <div class="container">
+                    <div class="insert">
+                        <table>
+                            <caption><h2>배송지 정보</h2></caption>
+                            <tr>
+                                <td class="col1">배송지 선택</td>
+                                <td class="col2">
+                                    <div class="input_main">
+                                        <div class="input_wrap">
+                                            <div class="radio_addr">
+                                                <input
+                                                        type="radio"
+                                                        name="addr_type"
+                                                        value="original"
+                                                        id="ori_addr"
+                                                        checked
+                                                        required
+                                                /><label for="ori_addr">기존 배송지</label>
+                                                <input
+                                                        type="radio"
+                                                        name="addr_type"
+                                                        value="new"
+                                                        id="new_addr"
+                                                /><label for="new_addr">신규 배송지</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col1">배송지명</td>
+                                <td class="col2">
+                                    <input type="text" id="addr_name" maxlength="10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col1">받는분</td>
+                                <td class="col2">
+                                    <input type="text" id="recipient" maxlength="10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col1">연락처</td>
+                                <td class="col2">
+                                    <input type="text" id="phone" maxlength="13">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col1">주소</td> <!-- 배송지 api 연결-->
+                                <td class="col2">
+                                    <input type="text" id="mail_num" maxlength="10">
+                                    <input type="text" id="addr_road" maxlength="30">
+                                    <input type="text" id="addr_detail" maxlength="30">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col1">배송 메시지</td>
+                                <td class="col2">
+                                    <input type="text" id="message" maxlength="50">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </form>
+            <!-- Flexbox 컨테이너 -->
+            <div class="order-body-content">
+                <div class="order-content">
+                    <div class="prod-list">
+                        <table class="tb1">
+                            <colgroup>
+                                <col style="width: 40px" />
+                                <col style="width: auto" />
+                                <col style="width: 120px" />
+                                <col style="width: 160px" />
+                                <col style="width: 120px" />
+                                <col style="width: 150px" />
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>상품 정보</th>
+                                <th>가격</th>
+                                <th>수량</th>
+                                <th>주문 금액</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--<tr th:if="${list.size()==0}">
+                                <td colspan="5">
+                                    <p>장바구니에 담긴 상품이 없습니다.</p>
+                                    <button class="btn" onclick="location.href='/product'">
+                                        쇼핑하러가기
+                                    </button>
+                                </td>
+                            </tr>-->
+                           <!-- <tr
+                                    th:unless="${orderReq.productList.size()==0}"
+                                    th:each="dto, dtoState:${orderReq.productList}"
+                            >
+                                <td>
+                                    <div class="prod-info">
+                                        <div class="prod-img">
+                                            &lt;!&ndash; 상품 상세 페이지 생성 후 확인 필요 &ndash;&gt;
+                                            <img src="${#strings.setSplit(dto.product.image_path, ' ')}[0]"
+                                                    alt="img"
+                                                    th:onclick="|location.href='/detail/${dto.product.productId}'|"
+                                            />
+                                        </div>
+                                        <div class="info">
+                                            &lt;!&ndash; 브랜드, 옵션, 상품이름 추가해야함 &ndash;&gt;
+                                            <div
+                                                    class="brand"
+                                                    th:text="${dto.product.brandName}"
+                                            ></div>
+                                            <div class="name">
+                                                &lt;!&ndash; 상품 상세 페이지 생성 후 확인 필요 &ndash;&gt;
+                                                <a
+                                                        th:text="${dto.product.name}"
+                                                        th:href="@{|/detail/${dto.product.productId}z|}"
+                                                ></a>
+                                            </div>
+                                            <div
+                                                    class="option-detail"
+                                                    th:text="${dto.Option != null ? '옵션: '+ dto.Option.content : ''}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    &lt;!&ndash;<div class="prod-info"> end&ndash;&gt;
+                                </td>
+                                <td>
+                                    <div
+                                            class="price"
+                                            th:text="${#numbers.formatInteger(dto.id, 1, 'COMMA') + '원'}"
+                                    ></div>
+                                </td>
+                                <td>
+                                    <div
+                                            class="quantity"
+                                            th:text="${dto.quantity + '개'}"
+                                    ></div>
+                                </td>
+                                <td>
+                                    <div class="price-quantity">
+                                        <span th:class="${dtoState.index}"
+                                              th:text="${#numbers.formatInteger(dto.quantity*dto.product.price, 1, 'COMMA')}"
+                                        ></span>원
+                                    </div>
+                                </td>
+                            </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--<div class="prod-list"> end-->
+                </div>
+                <!--<div class="order-content"> end-->
+                <div class="aside">
+                    <div class="price">
+                        <p class="price-header">
+                            <strong>최종 결제정보</strong>
+                        </p>
+                        <p class="prod-price">
+                            상품금액&nbsp;<ins><em></em>원</ins>
+                        </p>
+                        <p class="delivery-price">
+                            배송비&nbsp;<ins>+<em></em>원</ins>
+                        </p>
+                        <p class="user_point">
+                            포인트&nbsp;<ins>-<em></em>원</ins>
+                        </p>
+                    </div>
+                    <hr />
+                    <div class="total-price">
+                        <span>총 주문 금액&nbsp;</span>
+                        <ins><em th:text="totalPrice"></em>원</ins>
+                    </div>
+                        <button class="btn_inicis" onclick="handlePayment('html5_inicis.INIpayTest', 'card')">일반 카드 결제</button>
+                        <button class="btn_kakao" onclick="handlePayment('kakaopay', 'card')">카카오 페이</button>
+                    </button>
+                </div>
+                <!--<div class="section order-body"> end-->
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    // 아임포트 코드
+    var impCode = /*[[${@environment.getProperty('imp.code')}]]*/ '';
+    console.log()
+
+    /*<![CDATA[*/
+    let items = /*[[${orderReq}]]*/ [];
+    console.log(items)
+    /*]]>*/
+
+    function handlePayment(pg, payMethod) {
+        console.log("handlePayment");
+        console.log(pg);
+        console.log(payMethod);
+
+        var order = {
+            price: 3000,
+            quantity: 1
+        };
+
+        // 결제하기 버튼 클릭 시 결제 요청
+        IMP.init(impCode);
+        IMP.request_pay({
+            pg: pg,
+            pay_method: payMethod,
+            merchant_uid: '212R3A11TD233AAY', // 주문번호 생성
+            amount: 100, // 결제 가격
+            buyer_name: document.getElementById("recipient"),
+            buyer_tel: document.getElementById("phone"),
+            buyer_addr: document.getElementById("addr_road"),// 구매자 주소지
+            buyer_postcode: document.getElementById("mail_num"), // 구매자 우편번호
+        }, function(rsp) {
+            console.log(rsp)
+            if (rsp.success) {
+                // 아임포트 결제 성공 시
+                $.ajax({
+                    type: 'POST',
+                    url: 'order/validation/' + rsp.imp_uid
+                }).done(function(data) {
+                    console.log(data);
+                    if (order.price == data.response.amount) {
+                        order.impUid = rsp.imp_uid;
+                        order.merchantUid = rsp.merchant_uid;
+
+                        order.paymentMethodType = rsp.pay_method;
+                        order.bankCode = rsp.bank_code;
+                        order.bankName = rsp.bank_name;
+                        order.paidAt = new Date(rsp.paid_at * 1000);
+                        order.status = rsp.status;
+
+                        // 결제 금액 일치. 우리 결제 성공 처리
+                        $.ajax({
+                            url: "order/donePayment",
+                            method: "post",
+                            data: JSON.stringify(order),
+                            contentType: "application/json"
+                        }).then(function(res) {
+                            console.log("res", res);
+                            console.log("rsp", rsp);
+                            var msg = '결제가 완료되었습니다.';
+                            msg += '고유ID : ' + rsp.imp_uid;
+                            msg += '상점 거래ID : ' + rsp.merchant_uid;
+                            msg += '결제 금액 : ' + rsp.paid_amount;
+                            msg += '카드 승인번호 : ' + rsp.apply_num;
+                            alert(msg);
+                        }).catch(function(error) {
+                            alert("망취소");
+                        });
+                    }
+                }).catch(function(error) {
+                    alert('망취소' + rsp.error_msg);
+                });
+            } else {
+                alert(rsp.error_msg);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
