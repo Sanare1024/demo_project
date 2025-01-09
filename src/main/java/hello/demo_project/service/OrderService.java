@@ -5,10 +5,7 @@ import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import hello.demo_project.domain.cart.CartRepository;
-import hello.demo_project.domain.order.Order;
-import hello.demo_project.domain.order.OrderRepository;
-import hello.demo_project.domain.order.OrderReq;
-import hello.demo_project.domain.order.OrderResult;
+import hello.demo_project.domain.order.*;
 import hello.demo_project.domain.payHistory.PaymentHistory;
 import hello.demo_project.domain.payHistory.PaymentHistoryRepository;
 import hello.demo_project.domain.product.OrderProduct;
@@ -39,7 +36,7 @@ public class OrderService {
     private final IamportClient iamportClient;
     private final PaymentHistoryRepository paymentHistoryRepository;
 
-    public long createOrder(OrderReq orderReq) throws DataNotFoundException, OutOfStockException {
+    public OrderPrepare createOrder(OrderReq orderReq) throws DataNotFoundException, OutOfStockException {
         userRepository.getUserByMemberId(orderReq.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("user not found"));
 
@@ -49,7 +46,7 @@ public class OrderService {
         //주문 상품
         long totalPrice = 0;
         for (OrderProduct orderProduct : orderReq.getProductList()) {
-            Product product = productRepository.getProductByProductId(orderProduct.getId())
+            Product product = productRepository.getProductByProductId(orderProduct.getProductId())
                     .orElseThrow(() -> new DataNotFoundException("product not found"));
 
             if (orderProduct.getQuantity() > product.getStock()){ //
@@ -77,8 +74,16 @@ public class OrderService {
 
             orderRepository.save(order);
         }
+
+        OrderPrepare orderPrepare = new OrderPrepare(
+                orderId,
+                orderReq.getUserId(),
+                orderReq.getProductList(),
+                totalPrice,
+                totalPrice
+        );
         //사용자의 주문 가격을 전부 더하고 그걸 전달
-        return totalPrice;
+        return orderPrepare; //ToDo 만들어서 보내
     }
 
     public IamportResponse<Payment> validateIamport(String imp_uid) {

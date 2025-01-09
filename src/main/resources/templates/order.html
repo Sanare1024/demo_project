@@ -102,52 +102,43 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!--<tr th:if="${list.size()==0}">
+                            <tr th:if="${orderPrepare.orderProductList.size()==0}">
                                 <td colspan="5">
                                     <p>장바구니에 담긴 상품이 없습니다.</p>
                                     <button class="btn" onclick="location.href='/product'">
                                         쇼핑하러가기
                                     </button>
                                 </td>
-                            </tr>-->
-                           <!-- <tr
-                                    th:unless="${orderReq.productList.size()==0}"
-                                    th:each="dto, dtoState:${orderReq.productList}"
+                            </tr>
+                            <tr
+                                    th:unless="${orderPrepare.orderProductList.size()==0}"
+                                    th:each="dto, dtoState:${orderPrepare.orderProductList}"
                             >
                                 <td>
                                     <div class="prod-info">
                                         <div class="prod-img">
-                                            &lt;!&ndash; 상품 상세 페이지 생성 후 확인 필요 &ndash;&gt;
-                                            <img src="${#strings.setSplit(dto.product.image_path, ' ')}[0]"
+                                            <!--상품 상세 페이지 생성 후 확인 필요-->
+                                            <img
+                                                    th:src="${dto.imagePath}"
                                                     alt="img"
-                                                    th:onclick="|location.href='/detail/${dto.product.productId}'|"
+                                                    th:onclick="|location.href='/products/${dto.productId}'|"
                                             />
                                         </div>
                                         <div class="info">
-                                            &lt;!&ndash; 브랜드, 옵션, 상품이름 추가해야함 &ndash;&gt;
-                                            <div
-                                                    class="brand"
-                                                    th:text="${dto.product.brandName}"
-                                            ></div>
                                             <div class="name">
-                                                &lt;!&ndash; 상품 상세 페이지 생성 후 확인 필요 &ndash;&gt;
                                                 <a
-                                                        th:text="${dto.product.name}"
-                                                        th:href="@{|/detail/${dto.product.productId}z|}"
+                                                        th:text="${dto.name}"
+                                                        th:href="@{|/detail/${dto.productId}|}"
                                                 ></a>
                                             </div>
-                                            <div
-                                                    class="option-detail"
-                                                    th:text="${dto.Option != null ? '옵션: '+ dto.Option.content : ''}"
-                                            ></div>
                                         </div>
                                     </div>
-                                    &lt;!&ndash;<div class="prod-info"> end&ndash;&gt;
+                                    <!--<div class="prod-info"> end-->
                                 </td>
                                 <td>
                                     <div
                                             class="price"
-                                            th:text="${#numbers.formatInteger(dto.id, 1, 'COMMA') + '원'}"
+                                            th:text="${#numbers.formatInteger(dto.price, 1, 'COMMA') + '원'}"
                                     ></div>
                                 </td>
                                 <td>
@@ -159,36 +150,34 @@
                                 <td>
                                     <div class="price-quantity">
                                         <span th:class="${dtoState.index}"
-                                              th:text="${#numbers.formatInteger(dto.quantity*dto.product.price, 1, 'COMMA')}"
+                                              th:text="${#numbers.formatInteger(dto.quantity*dto.price, 1, 'COMMA')}"
                                         ></span>원
                                     </div>
-                                </td>
-                            </tr>-->
+                                </td>-->
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                     <!--<div class="prod-list"> end-->
                 </div>
                 <!--<div class="order-content"> end-->
+
                 <div class="aside">
                     <div class="price">
                         <p class="price-header">
                             <strong>최종 결제정보</strong>
                         </p>
-                        <p class="prod-price">
-                            상품금액&nbsp;<ins><em></em>원</ins>
+                        <p class="product-price">
+                            상품금액&nbsp;<ins><em th:text="${orderPrepare.totalPrice}"></em>원</ins>
                         </p>
-                        <p class="delivery-price">
-                            배송비&nbsp;<ins>+<em></em>원</ins>
-                        </p>
-                        <p class="user_point">
-                            포인트&nbsp;<ins>-<em></em>원</ins>
+                        <p class="user-point">
+                            사용할 포인트<ins><em th:text="${orderPrepare.totalPrice}"></em>원</ins>
                         </p>
                     </div>
                     <hr />
                     <div class="total-price">
                         <span>총 주문 금액&nbsp;</span>
-                        <ins><em th:text="totalPrice"></em>원</ins>
+                        <ins><div th:id="final-price" th:text="${orderPrepare.finalPrice}" ></div>원</ins>
                     </div>
                         <button class="btn_inicis" onclick="handlePayment('html5_inicis.INIpayTest', 'card')">일반 카드 결제</button>
                         <button class="btn_kakao" onclick="handlePayment('kakaopay', 'card')">카카오 페이</button>
@@ -201,21 +190,33 @@
 </div>
 <script th:inline="javascript">
     // 아임포트 코드
+    /*var finalPrice = [[${orderPrepare.finalPrice}]]*/;
+    /*document.getElementById("final-price").textContent = 100*/
+
     var impCode = /*[[${@environment.getProperty('imp.code')}]]*/ '';
-    console.log()
+    console.log(impCode)
 
     /*<![CDATA[*/
-    let items = /*[[${orderReq}]]*/ [];
+    let items = /*[[${orderPrepare}]]*/ [];
     console.log(items)
-    /*]]>*/
+    function calculateFinal(productPrice, usedPoint) {
+        console.log(productPrice)
+        console.log(usedPoint)
+
+    }
 
     function handlePayment(pg, payMethod) {
-        console.log("handlePayment");
+        console.log("------handlePayment-------");
         console.log(pg);
         console.log(payMethod);
+        console.log(document.getElementById("recipient").value)
+        var orderPrepare = [[${orderPrepare.orderId}]];
+        console.log("오더프리페어");
+        console.log(JSON.stringify(orderPrepare));
 
         var order = {
-            price: 3000,
+            uid: $('input[name=orderPrepare_orderId]').val(),
+            price: document.getElementById("final-price").value,
             quantity: 1
         };
 
@@ -224,12 +225,12 @@
         IMP.request_pay({
             pg: pg,
             pay_method: payMethod,
-            merchant_uid: '212R3A11TD233AAY', // 주문번호 생성
-            amount: 100, // 결제 가격
-            buyer_name: document.getElementById("recipient"),
-            buyer_tel: document.getElementById("phone"),
-            buyer_addr: document.getElementById("addr_road"),// 구매자 주소지
-            buyer_postcode: document.getElementById("mail_num"), // 구매자 우편번호
+            merchant_uid: [[${orderPrepare.orderId}]], // 주문번호 생성
+            amount: order.price, // 결제 가격
+            buyer_name: document.getElementById("recipient").value,
+            buyer_tel: document.getElementById("phone").value,
+            buyer_addr: document.getElementById("addr_road").value,// 구매자 주소지
+            buyer_postcode: document.getElementById("mail_num").value, // 구매자 우편번호
         }, function(rsp) {
             console.log(rsp)
             if (rsp.success) {
@@ -255,7 +256,7 @@
                             method: "post",
                             data: JSON.stringify(order),
                             contentType: "application/json"
-                        }).then(function(res) {
+                        }).then(function(res) { //Todo 날려보고 제대로 되는지 확인 안되면 유지
                             console.log("res", res);
                             console.log("rsp", rsp);
                             var msg = '결제가 완료되었습니다.';

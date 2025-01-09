@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderProduct {
-    long id;
-    long quantity;
+    private long productId;
+    private String name;
+    private long price;
+    private long quantity;
+    private String imagePath;
 }
