@@ -6,5 +6,53 @@
 </head>
 <body>
 
+<form th:action="@{/order/prepare}" th:object="${OrderReq}" th:method="get">
+    <div>
+        임시 장바구니 입력
+    </div>
+    <div>
+        <label for="orderId">오더id</label>
+        <input type="text" id="orderId" th:field="*{orderId}" class="form-control" placeholder="이름을 입력하세요">
+    </div>
+    <div>
+        <label for="userId">유저id</label>
+        <input type="text" id="userId" th:field="*{userId}" name="price" class="form-control" placeholder="가격을 입력하세요">
+    </div>
+    <div>
+        <label for="postCode">우편번호</label>
+        <input type="text" id="postCode" th:field="*{postCode}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="address">주소</label>
+        <input type="text" id="address" th:field="*{address}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="addressDetail">상세주소</label>
+        <input type="text" id="addressDetail" th:field="*{addressDetail}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="phoneNumber">폰번호</label>
+        <input type="text" id="phoneNumber" th:field="*{phoneNumber}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="message">배송메시지</label>
+        <input type="text" id="message" th:field="*{message}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="paymentMethod">결제방식</label>
+        <input type="text" id="paymentMethod" th:field="*{paymentMethod}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+    <div>
+        <label for="payStatus">결제상태</label>
+        <input type="text" id="payStatus" th:field="*{payStatus}" name="stock" class="form-control" placeholder="재고을 입력하세요">
+    </div>
+
+    <hr class="my-4">
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    th:onclick="|location.href='@{/order/prepare}'|" type="submit">보내기</button> </div>
+    </div>
+</form>
 </body>
 </html>

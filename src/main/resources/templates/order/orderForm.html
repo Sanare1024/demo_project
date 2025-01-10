@@ -1,10 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>장바구니</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="/js/cart.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link href="/css/cart.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-$END$
+<div id="container">
+    <header class="roenbeauty-header"></header>
+    <div class="section order-body">
+        <h1 class="order-title">장바구니</h1>
+        <div class="order-step">
+            <ul>
+                <li class="active" title="현재 단계">
+                    <i class="icon icon-order-step1"></i
+                    ><span><strong>01</strong>장바구니</span>
+                </li>
+                <li>
+                    <i class="icon icon-order-step2 off"></i
+                    ><span><strong>02</strong>주문/결제</span>
+                </li>
+                <li>
+                    <i class="icon icon-order-step3 off"></i
+                    ><span><strong>03</strong>주문완료</span>
+                </li>
+            </ul>
+        </div>
+        <!-- Flexbox 컨테이너 -->
+        <div class="order-body-content">
+            <div class="order-content">
+                <div class="cart-head">
+                    <button class="btn black" th:onclick="|deleteItem(${memberId})|">
+                        선택 삭제
+                    </button>
+                    <button
+                            class="btn black delete-btn"
+                            th:data-member-id="${memberId}"
+                    >
+                        전체 삭제
+                    </button>
+                </div>
+                <div class="prod-list">
+                    <table class="tb1">
+                        <colgroup>
+                            <col style="width: 40px" />
+                            <col style="width: auto" />
+                            <col style="width: 120px" />
+                            <col style="width: 160px" />
+                            <col style="width: 120px" />
+                            <col style="width: 150px" />
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="check-area">
+                                <div class="check-box prod-check-all">
+                                    <input type="checkbox" checked id="allCheck" />
+                                </div>
+                            </th>
+                            <th>상품 정보</th>
+                            <th>가격</th>
+                            <th>수량</th>
+                            <th>주문 금액</th>
+                            <th>선택</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${list.size()==0}">
+                            <td colspan="5">
+                                <p>장바구니에 담긴 상품이 없습니다.</p>
+                                <button
+                                        class="btn black"
+                                        onclick="location.href='/products'"
+                                >
+                                    쇼핑하러가기
+                                </button>
+                            </td>
+                        </tr>
+                        <tr
+                                th:unless="${list.size()==0}"
+                                th:each="dto, dtoState:${list}"
+                        >
+                            <td class="check-area">
+                                <div class="check-box">
+                                    <input
+                                            type="checkbox"
+                                            th:value="${dto.cartId}"
+                                            th:class="|chk ${dtoState.index}|"
+                                            checked
+                                    />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prod-info">
+                                    <div class="prod-img">
+                                        <!-- 상품 상세 페이지 생성 후 확인 필요 -->
+                                        <img
+                                                th:src="${dto.prodImage}"
+                                                alt="img"
+                                                th:onclick="|location.href='/products/${dto.productId}'|"
+                                        />
+                                    </div>
+                                    <div class="info">
+                                        <div class="brand" th:text="${dto.brand}"></div>
+                                        <div class="name">
+                                            <!-- 상품 상세 페이지 생성 후 확인 필요 -->
+                                            <a
+                                                    th:text="${dto.prodName}"
+                                                    th:href="@{|/products/${dto.productId}|}"
+                                            ></a>
+                                        </div>
+                                        <div
+                                                class="option-detail"
+                                                th:text="${dto.Option != null ? '옵션: '+ dto.Option.content : ''}"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <!--<div class="prod-info"> end-->
+                            </td>
+                            <td>
+                                <div
+                                        class="price"
+                                        th:text="${#numbers.formatInteger(dto.price, 1, 'COMMA') + '원'}"
+                                ></div>
+                            </td>
+                            <td>
+                                <div class="spinner">
+                                    <button
+                                            type="button"
+                                            class="minus"
+                                            th:onclick="|updateQuantity(this, ${dtoState.index}, ${dto.cartId})|"
+                                    >
+                                        <b>-</b>
+                                    </button>
+                                    <input
+                                            type="number"
+                                            class="quantity"
+                                            th:index=" ${dtoState.index}"
+                                            th:cartId="${dto.cartId}"
+                                            th:value="${dto.quantity}"
+                                    />
+                                    <button
+                                            type="button"
+                                            class="plus"
+                                            th:onclick="|updateQuantity(this, ${dtoState.index}, ${dto.cartId})|"
+                                    >
+                                        <b>+</b>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="price-quantity">
+                        <span
+                                th:class="${dtoState.index}"
+                                th:text="${#numbers.formatInteger(dto.quantity*dto.price, 1, 'COMMA')}"
+                        ></span
+                        >원
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btngroup">
+                                    <button type="button" class="btn black" onclick="">
+                                        바로구매
+                                    </button>
+                                    <button type="button" class="btn white" onclick="">
+                                        선물하기
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--<div class="prod-list"> end-->
+            </div>
+            <!--<div class="order-content"> end-->
+            <div class="aside">
+                <div class="price">
+                    <p class="price-header">
+                        <strong>선택한 상품</strong>(<span
+                            th:text="${list.size()}"
+                    ></span
+                    >)
+                    </p>
+                    <p class="prod-price">
+                        상품금액&nbsp;<ins><em></em>원</ins>
+                    </p>
+                    <p class="delivery-price">
+                        배송비&nbsp;<ins>+<em></em>원</ins>
+                    </p>
+                </div>
+                <hr />
+                <div class="total-price">
+                    <span>총 주문 금액&nbsp;</span>
+                    <ins><em></em>원</ins>
+                </div>
+                <div class="btngroup">
+                    <button class="btn black" onclick="">선택상품 구매</button>
+                    <button class="btn white" onclick="">선택상품 선물</button>
+                </div>
+            </div>
+            <!--<div class="section order-body"> end-->
+        </div>
+    </div>
+    <footer></footer>
+</div>
 </body>
 </html>
