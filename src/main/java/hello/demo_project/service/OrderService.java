@@ -68,7 +68,7 @@ public class OrderService {
                     orderReq.getMessage(),
                     new Date(),
                     "paymentMethod",
-                    "payStatus",
+                    "notPay",
                     "impUid"
             );
 
@@ -110,7 +110,7 @@ public class OrderService {
     }
 
     @Transactional
-    public String completeOrder(OrderResult orderResult) {
+    public PaymentHistory completeOrder(OrderResult orderResult) {
         // ToDo 포트원을 통해 결제가 되고 (orderDetail(지금은 index))에서 넘어온 정보를 order 저장
         try {
             userRepository.getUserByMemberId(orderResult.getUserId())
@@ -131,10 +131,16 @@ public class OrderService {
                 product.buy(order.getProductQuantity());
 
                 // 오더 남은부분 확정짓기
-                order.completeOrder(orderResult.getOrderAt(), orderResult.getPaymentMethod(), orderResult.getPayStatus()
-                , orderResult.getImpUid());
-
-
+                order.completeOrder(
+                        orderResult.getPostCode(),
+                        orderResult.getAddress(),
+                        orderResult.getAddressDetail(),
+                        orderResult.getPhoneNumber(),
+                        orderResult.getMessage(),
+                        orderResult.getOrderAt(),
+                        orderResult.getPaymentMethod(),
+                        orderResult.getPayStatus(),
+                        orderResult.getImpUid());
                 //장바구니 넘버 모으기
                 productIds.add(order.getProductId());
             }
@@ -155,14 +161,30 @@ public class OrderService {
             //장바구니 비우기
             cartRepository.deleteCartByProductIdInAndUserId(productIds, orderResult.getUserId());
 
-            return "주문 정보가 성공적으로 저장되었습니다.";
+            log.info("주문 정보가 성공적으로 저장되었습니다.");
+
+            return paymentHistory;
+
         } catch (Exception e) {
             log.info(e.getMessage());
             cancelPayment(orderResult.getImpUid());
-            // 실패했을때 이것만 하고 끝인가?
-            // 주문을 다시 이어나가려면 어떻게 해야할까
-            // 아닌가 cancelPayment를 하니까 창은 안바뀔거고 다시 주문하기 창에서 주문결제하기 버튼을 누르면 되는건가
-            return "주문 정보 저장에 실패했습니다.";
+            log.info("주문 정보 저장에 실패했습니다.");
+            return null;
         }
+    }
+
+    public OrderDto getOrder(String orderId) {
+        Order order = orderRepository.findOrderByOrderId(orderId);
+
+        log.info("order : {}", order);
+
+        OrderDto orderDto = new OrderDto(
+                order.getOrderNumber(), order.getOrderId(), order.getProductId(), order.getProductName(),
+                order.getProductQuantity(), order.getUserId(), order.getPostCode(), order.getAddress(),
+                order.getAddressDetail(), order.getPhoneNumber(), order.getMessage(), order.getOrderAt(),
+                order.getPaymentMethod(), order.getPayStatus(), order.getImpUid()
+        );
+
+        return  orderDto;
     }
 }

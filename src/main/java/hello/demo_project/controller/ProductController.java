@@ -64,7 +64,7 @@ public class ProductController {
     @PostMapping("/update/{productId}")
     public String updateProduct(@PathVariable long productId, @ModelAttribute ProductReq req) {
         productService.updateProduct(productId, req);
-        return "redirect:/product/{productId}";
+        return "redirect:{productId}";
     }
 
     //상품 삭제(delete)

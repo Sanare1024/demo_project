@@ -22,7 +22,6 @@ public class OrderResult {
     private String addressDetail; //주소 뒤 상세주소
     private long phoneNumber;
     private String message; //주문 요청사항
-//  private Status status; // 주문상태
     private Date orderAt; //주문 날짜
     //결제관련
     private String paymentMethod; //결제수단

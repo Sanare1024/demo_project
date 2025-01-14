@@ -3,9 +3,8 @@ package hello.demo_project.controller;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import hello.demo_project.domain.order.OrderPrepare;
-import hello.demo_project.domain.order.OrderReq;
-import hello.demo_project.domain.order.OrderResult;
+import hello.demo_project.domain.order.*;
+import hello.demo_project.domain.payHistory.PaymentHistory;
 import hello.demo_project.domain.product.OrderProduct;
 import hello.demo_project.domain.product.Product;
 import hello.demo_project.domain.product.ProductRepository;
@@ -50,7 +49,7 @@ public class OrderController {
         //ToDo 장바구니에서 체크한 제품리스트 받아와서 서비스에서 총금액 계산해서 orderDetail(지금은 index)에 넘기기
 
         orderReq.setProductList(new ArrayList<>());
-        orderReq.getProductList().add(new OrderProduct(1, "상품1",123, 5, "imgPath"));
+        orderReq.getProductList().add(new OrderProduct(1, "상품1",3000, 2, "https://media.istockphoto.com/id/148423285/ko/%EB%B2%A1%ED%84%B0/%ED%8A%9C%EB%B8%8C-%ED%99%94%EC%9E%A5%ED%92%88.jpg?s=1024x1024&w=is&k=20&c=YhO1DSPfA3NiK0uDo2nbmSjodN0z35lRuKR-DESSAZA="));
 
         OrderPrepare orderPrepare = orderService.createOrder(orderReq);
 
@@ -59,6 +58,7 @@ public class OrderController {
     }
 
     //결제 확인
+    @ResponseBody
     @PostMapping("/validation/{imp_uid}")
     public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
@@ -68,28 +68,38 @@ public class OrderController {
 
     //결제 완료
     @PostMapping("/donePayment")
-    public ResponseEntity<String> processOrder(@RequestBody OrderResult orderResult) { //내 니즈에 맞춰서 형태를 새로 만들어서
+    public String processOrder(@RequestBody OrderResult orderResult, Model model) { //내 니즈에 맞춰서 형태를 새로 만들어서
         // 주문 정보를 로그에 출력
         log.info("Received orders: {}", orderResult.toString());
         // 성공적으로 받아들였다는 응답 반환
-        return ResponseEntity.ok(orderService.completeOrder(orderResult));
-        //Todo 리스폰스ok 가 아니라 페이지를 돌려준다 + 결제결과(OrderResult)를 담아서 같이 넘겨
+        PaymentHistory paymentHistory = orderService.completeOrder(orderResult);
+        String orderId = paymentHistory.getOrderId();
+        return "redirect:completeOrder/" + orderId;
+    }
+
+    @GetMapping("/completeOrder/{orderId}")
+    public String completeOrder (@PathVariable String orderId, Model model) {
+        OrderDto orderDto = orderService.getOrder(orderId);
+        model.addAttribute("orderDto", orderDto);
+        return "orderComplete";
     }
 
 
     //결제 취소
+    @ResponseBody
     @PostMapping("/cancel/{imp_uid}")
     public IamportResponse<Payment> cancelPayment(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         return orderService.cancelPayment(imp_uid);
     }
 
-    @PostConstruct
+
+
+    /*@PostConstruct
     public void init() {
         User user1 = new User("id", "pass", "김", 123, 2, 123, new Date(), false);
         Product product1 = new Product("상품1", 123, 3,"ima_path", 2, 400);
 
         userRepository.save(user1);
         productRepository.save(product1);
-    }
-
+    }*/
 }

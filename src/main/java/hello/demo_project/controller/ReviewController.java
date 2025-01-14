@@ -64,12 +64,12 @@ public class ReviewController {
     @PostMapping("/update/{reviewId}")
     public String updateReview(@PathVariable long reviewId, @ModelAttribute ReviewReq req) {
         reviewService.updateReview(reviewId, req);
-        return "redirect:/review/{reviewId}";
+        return "redirect:{reviewId}";
     }
 
     @GetMapping("/delete/{reviewId}") //D
     public String deleteReview(@PathVariable long reviewId) {
         reviewService.deleteReview(reviewId);
-        return "redirect:/review/list";
+        return "redirect:list";
     }
 }

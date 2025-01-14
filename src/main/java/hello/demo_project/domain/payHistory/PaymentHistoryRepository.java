@@ -9,6 +9,4 @@ import java.util.Optional;
 public interface PaymentHistoryRepository extends JpaRepository<PaymentHistory, Long> {
 
     Optional<PaymentHistory> getPaymentHistoryByPaymentId(long PaymentId);
-
-
 }

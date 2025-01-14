@@ -17,7 +17,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderNumber; //pk
-    private String orderId; //주문번호
+    private String orderId; //고유주문코드
     private long productId; //상품키
     private String productName; // 상품명
     private long productQuantity; //상품 개수
@@ -28,7 +28,6 @@ public class Order {
     private String addressDetail; //주소 뒤 상세주소
     private long phoneNumber;
     private String message; //주문 요청사항
-//  private Status status; // 주문상태
     @CreatedDate
     private Date orderAt; //주문 날짜
     //결제관련
@@ -53,7 +52,12 @@ public class Order {
         this.impUid = impUid;
     }
 
-    public void completeOrder(Date orderAt, String paymentMethod, String payStatus, String impUid) {
+    public void completeOrder(long postCode, String address, String addressDetail, long phoneNumber, String message, Date orderAt, String paymentMethod, String payStatus, String impUid) {
+        this.postCode = postCode;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.phoneNumber = phoneNumber;
+        this.message = message;
         this.orderAt = orderAt;
         this.paymentMethod = paymentMethod;
         this.payStatus = payStatus;
