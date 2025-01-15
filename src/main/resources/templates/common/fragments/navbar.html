@@ -1,10 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
+<head> </head>
 <body>
-$END$
+<nav>
+    <div class="nav_main">
+        <div class="nav_wrap">
+            <div class="menu_wrap">
+                <div class="category_wrap">
+                    <button type="botton" class="category_btn">
+                        <i class="fa-solid fa-bars fa-2xl" style="color: #515151"></i>
+                    </button>
+                    <div class="category_popup">
+                        <ul class="category_list">
+                            <li>
+                                <a th:href="@{/}" class="category_top">스킨케어</a>
+                                <ul class="category_sub">
+                                    <li><a th:href="@{/}">스킨/토너</a></li>
+                                    <li><a th:href="@{/}">에센스/세럼/앰플</a></li>
+                                    <li><a th:href="@{/}">크림</a></li>
+                                    <li><a th:href="@{/}">로션</a></li>
+                                    <li><a th:href="@{/}">미스트/오일</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">메이크업</a>
+                                <ul>
+                                    <li><a th:href="@{/}">립메이크업</a></li>
+                                    <li><a th:href="@{/}">베이스메이크업</a></li>
+                                    <li><a th:href="@{/}">아이메이크업</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">마스크팩</a>
+                                <ul>
+                                    <li><a th:href="@{/}">시트팩</a></li>
+                                    <li><a th:href="@{/}">패드</a></li>
+                                    <li><a th:href="@{/}">코팩</a></li>
+                                    <li><a th:href="@{/}">패치</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">헤어케어</a>
+                                <ul>
+                                    <li><a th:href="@{/}">샴푸/린스</a></li>
+                                    <li><a th:href="@{/}">트리트먼트/팩</a></li>
+                                    <li><a th:href="@{/}">헤어에센스</a></li>
+                                    <li><a th:href="@{/}">염색약/펌</a></li>
+                                    <li><a th:href="@{/}">헤어기기/브러시</a></li>
+                                    <li><a th:href="@{/}">스타일링</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">바디케어</a>
+                                <ul>
+                                    <li><a th:href="@{/}">로션/오일</a></li>
+                                    <li><a th:href="@{/}">샤워/입욕</a></li>
+                                    <li><a th:href="@{/}">립/핸드케어</a></li>
+                                    <li><a th:href="@{/}">바디미스트</a></li>
+                                    <li><a th:href="@{/}">제모/왁싱</a></li>
+                                    <li><a th:href="@{/}">데오드란트</a></li>
+                                    <li><a th:href="@{/}">베이비</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">맨즈케어</a>
+                                <ul>
+                                    <li><a th:href="@{/}">스킨케어</a></li>
+                                    <li><a th:href="@{/}">메이크업</a></li>
+                                    <li><a th:href="@{/}">쉐이빙</a></li>
+                                    <li><a th:href="@{/}">헤어케어</a></li>
+                                    <li><a th:href="@{/}">바디케어</a></li>
+                                    <li><a th:href="@{/}">프래그런스/라이프</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/}" class="category_top">네일케어</a>
+                                <ul>
+                                    <li><a th:href="@{/}">일반네일</a></li>
+                                    <li><a th:href="@{/}">젤네일</a></li>
+                                    <li><a th:href="@{/}">네일팁/스티커</a></li>
+                                    <li><a th:href="@{/}">네일케어</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a th:href="@{/}" class="category_top">향수/디퓨저</a>
+                                <ul>
+                                    <li><a th:href="@{/}">여성향수</a></li>
+                                    <li><a th:href="@{/}">남성향수</a></li>
+                                    <li><a th:href="@{/}">유니섹스향수</a></li>
+                                    <li><a th:href="@{/}">미니/고체향수</a></li>
+                                    <li><a th:href="@{/}">홈프래그런스</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li>
+                              <a th:href="@{/}">뷰티소품</a>
+                              <ul>
+                                <li><a th:href="@{/}">메이크업소품</a></li>
+                                <li><a th:href="@{/}">스킨케어소품</a></li>
+                                <li><a th:href="@{/}">아이소품</a></li>
+                                <li><a th:href="@{/}">헤어/바디소품</a></li>
+                                <li><a th:href="@{/}">뷰티디바이스</a></li>
+                                <li><a th:href="@{/}">뷰티잡화</a></li>
+                              </ul>
+                            </li> -->
+                            <!-- <li>
+                              <a th:href="@{/}">구강용품</a>
+                              <ul>
+                                <li><a th:href="@{/}">칫솔</a></li>
+                                <li><a th:href="@{/}">치약</a></li>
+                                <li><a th:href="@{/}">애프터구강케어</a></li>
+                                <li><a th:href="@{/}">휴대용세트</a></li>
+                                <li><a th:href="@{/}">구강가전</a></li>
+                              </ul>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="gnb_wrap">
+                    <ul class="gnb_ul">
+                        <li><a th:href="@{/}">랭킹</a></li>
+                        <li><a th:href="@{/}">이벤트</a></li>
+                        <li><a th:href="@{/mypage/cs}">고객센터</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="util_wrap">
+                <ul>
+                    <li><a th:href="@{/login}">로그인</a></li>
+                    <li><a th:href="@{/register/user}">회원가입</a></li>
+                    <li><a th:href="@{/mypage/orderDetails}">주문배송</a></li>
+                    <li><a th:href="@{/mypage/membership}">멤버십</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
 </body>
 </html>

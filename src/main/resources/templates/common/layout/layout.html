@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        th:fragment="layout"
+>
+<!-- config : 공통 JS / CSS -->
+<head th:replace="../common/fragments/config :: config">
+    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">
+        LoEBeauty
+    </title>
 </head>
 <body>
-$END$
+<div class="_layout">
+    <section class="_section">
+        <header
+                class="_header"
+                th:replace="../common/fragments/header :: header"
+        ></header>
+
+        <nav
+                class="_navbar"
+                th:replace="../common/fragments/navbar :: navbar"
+        ></nav>
+
+        <article class="_article">
+            <th:block layout:fragment="content"></th:block>
+        </article>
+
+        <footer
+                class="_footer"
+                th:replace="../common/fragments/footer :: footer"
+        ></footer>
+    </section>
+</div>
 </body>
 </html>

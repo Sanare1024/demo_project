@@ -1,0 +1,339 @@
+@charset "UTF-8";
+* {
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: 100%;
+    -ms-overflow-style: none;
+    text-size-adjust: 100%;
+    box-sizing: border-box;
+}
+
+article,
+aside,
+body,
+button,
+dd,
+div,
+dl,
+dt,
+fieldset,
+figure,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+input,
+label,
+legend,
+li,
+nav,
+ol,
+p,
+section,
+select,
+table,
+td,
+textarea,
+th,
+ul {
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    white-space: normal;
+    word-break: break-all;
+}
+
+body {
+    background-color: #fff;
+    color: #1e1e1e;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    min-width: 1280px;
+}
+
+i {
+    margin: 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration-line: none;
+}
+
+button {
+    width: 150px;
+    height: 50px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+input {
+    width: 400px;
+    height: 50px;
+    padding: 10px 40px 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    margin-bottom: 10px;
+    font-size: 16px;
+    outline: 0;
+}
+
+input::-ms-clear,
+input::-ms-reveal {
+    display: none;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration {
+    display: none;
+}
+
+select {
+    -webkit-appearance: none; /* 크롬 화살표 없애기 */
+    -moz-appearance: none; /* 파이어폭스 화살표 없애기 */
+    appearance: none;
+    width: 400px;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-align: center;
+    outline: 0;
+}
+
+textarea {
+    resize: none;
+    width: 400px;
+    height: 50px;
+    padding: 10px 20px 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    margin-bottom: 10px;
+    font-size: 16px;
+    outline: 0;
+}
+
+button:hover,
+label:hover {
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}
+
+.required {
+    color: #f64e60;
+}
+
+.popup {
+    display: block !important;
+}
+
+.is_clear {
+    color: #0db3d9;
+    caret-color: #0db3d9;
+    border: 1px solid #0db3d9;
+}
+
+.err_msg {
+    display: none;
+    color: #f64e60;
+    margin: -5px 0 0 5px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.is_error {
+    color: #f64e60;
+    caret-color: #f64e60;
+    border: 1px solid #f64e60;
+}
+
+/* animation */
+@keyframes icon_rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes primary_change {
+    from {
+        color: #515151;
+    }
+    to {
+        color: #f26b8f;
+    }
+}
+@keyframes primary_change2 {
+    from {
+        background-color: #fff;
+        color: #1e1e1e;
+        font-weight: 600;
+    }
+    to {
+        background-color: #f26b8f;
+        color: #fff;
+        font-weight: 800;
+    }
+}
+@keyframes secondary_change2 {
+    from {
+        background-color: #0db3d9;
+        color: #fff;
+        font-weight: 600;
+    }
+    50% {
+        background-color: #fff;
+        color: #1e1e1e;
+        font-weight: 800;
+    }
+    to {
+        background-color: #0db3d9;
+        color: #fff;
+        font-weight: 600;
+    }
+}
+.register_wrap {
+    flex: 1;
+}
+.register_wrap h1 {
+    font-size: 40px;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.register_wrap h2 {
+    font-size: 32px;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.register_wrap hr {
+    width: 60%;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+.register_wrap form {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.register_wrap form .form_des {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: #515151;
+}
+.register_wrap form .input_main {
+    display: block;
+    position: relative;
+    margin: 10px 0 10px 0;
+}
+.register_wrap form .input_main .input_label {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+.register_wrap form .input_main .input_des {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #515151;
+}
+.register_wrap form .input_main .input_wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.register_wrap form .input_main .input_wrap label .error {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: #f64e60;
+}
+.register_wrap form .input_main .input_wrap .beauty {
+    width: 800px !important;
+}
+.register_wrap form .input_main .input_wrap .input_radio {
+    width: 400px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.register_wrap form .input_main .input_wrap .input_radio input[type=radio] {
+    display: none;
+}
+.register_wrap form .input_main .input_wrap .input_radio input[type=radio] + label {
+    display: inline-block;
+    width: 120px;
+    height: 50px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 50px;
+    font-weight: 500;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #1e1e1e;
+}
+.register_wrap form .input_main .input_wrap .input_radio input[type=radio] + label:hover {
+    animation: primary_change2 0.3s forwards;
+}
+.register_wrap form .input_main .input_wrap .input_radio input[type=radio]:checked + label {
+    background-color: #f26b8f;
+    color: #ffffff;
+    font-weight: 800;
+}
+.register_wrap form .input_main .input_wrap .input_select {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.register_wrap form .input_main .input_wrap button {
+    width: 300px;
+    margin: 50px 0 50px 0;
+    padding: 5px 20px 5px 20px;
+    background-color: #0db3d9;
+    color: #ffffff;
+    font-size: 20px;
+}
+.register_wrap form .input_main .input_wrap textarea {
+    width: 400px;
+    height: 200px;
+}

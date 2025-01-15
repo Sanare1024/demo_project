@@ -171,7 +171,7 @@
                             상품금액&nbsp;<ins><em th:text="${orderPrepare.totalPrice}"></em>원</ins>
                         </p>
                         <p class="user-point">
-                            사용할 포인트<ins><em th:text="${orderPrepare.totalPrice}"></em>원</ins>
+                            사용할 포인트<ins><em th:text="0"></em>포인트</ins>
                         </p>
                     </div>
                     <hr />
@@ -260,6 +260,9 @@
                         order.payStatus = rsp.status;
                         order.impUid = rsp.imp_uid;
                         order.merchantUid = rsp.merchant_uid;
+                        order.usedPoint =
+                        order.couponId =
+
 
                         console.log(order)
                         // 결제 금액 일치. 우리 결제 성공 처리
