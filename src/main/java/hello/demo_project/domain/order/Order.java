@@ -22,6 +22,7 @@ public class Order {
     private String productName; // 상품명
     private long productQuantity; //상품 개수
     private long userId; //회원키
+    private long optionId;//옵션키
     //배송관련
     private long postCode; //우편번호
     private String address; //받는분 주소
@@ -32,15 +33,17 @@ public class Order {
     private Date orderAt; //주문 날짜
     //결제관련
     private String paymentMethod; //결제수단
-    private String payStatus; //결제 상태
+    private String orderStatus; //주문상태
     private String impUid; //결제 아임포트 키
+    private char isReview;
 
-    public Order(String orderId, long productId, String productName, long productQuantity, long userId, long postCode, String address, String addressDetail, long phoneNumber, String message, Date orderAt, String paymentMethod, String payStatus, String impUid) {
+    public Order(String orderId, long productId, String productName, long productQuantity, long userId, long optionId, long postCode, String address, String addressDetail, long phoneNumber, String message, Date orderAt, String paymentMethod, String orderStatus, String impUid, char isReview) {
         this.orderId = orderId;
         this.productId = productId;
         this.productName = productName;
         this.productQuantity = productQuantity;
         this.userId = userId;
+        this.optionId = optionId;
         this.postCode = postCode;
         this.address = address;
         this.addressDetail = addressDetail;
@@ -48,8 +51,9 @@ public class Order {
         this.message = message;
         this.orderAt = orderAt;
         this.paymentMethod = paymentMethod;
-        this.payStatus = payStatus;
+        this.orderStatus = orderStatus;
         this.impUid = impUid;
+        this.isReview = isReview;
     }
 
     public void completeOrder(long postCode, String address, String addressDetail, long phoneNumber, String message, Date orderAt, String paymentMethod, String payStatus, String impUid) {
@@ -60,7 +64,7 @@ public class Order {
         this.message = message;
         this.orderAt = orderAt;
         this.paymentMethod = paymentMethod;
-        this.payStatus = payStatus;
+        this.orderStatus = payStatus;
         this.impUid = impUid;
     }
 }

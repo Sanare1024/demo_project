@@ -1,5 +1,6 @@
 package hello.demo_project.service;
 
+import hello.demo_project.domain.order.Order;
 import hello.demo_project.domain.product.Product;
 import hello.demo_project.domain.product.ProductDto;
 import hello.demo_project.domain.product.ProductRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -75,5 +77,44 @@ public class ReviewService {
 
     public void deleteReview(long reviewId) {
         reviewRepository.deleteById(reviewId);
+    }
+
+    //이건 리뷰서비스에 있어야할거
+    public SaveReviewFormDto getProduct(Long orderNumber) {
+        Optional<Order> order = orderRepository.findById(orderNumber);
+        Product product = productRepository.findById(order.get().getProduct().getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        Option option = null;
+        if(order.get().getOption() != null) {
+            option = optionRepository.findById(order.get().getOption().getOptionId())
+                    .orElseThrow(() -> new IllegalArgumentException("Option not found"));
+        }
+
+        Date now = new Date();
+
+        // 한 달 이상 경과 여부 확인
+        long diffInMillies = now.getTime() - order.get().getCreatedAt().getTime();
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+        boolean isMonth = diffInDays >= 30;
+
+        SaveReviewFormDto saveReviewFormDto = new SaveReviewFormDto(
+                order.get().getUser().getUserId(),
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                product.getBrand(),
+                null,
+                product.getProductType().getProdTypeId(),
+                option != null ? option.getOptionId() : null,
+                option != null ? option.getContent() : null,
+                isMonth ? 'Y' : 'N'
+        );
+
+        // prodImage 설정
+        saveReviewFormDto.setProdImageFromString(product.getImagePath());
+        log.info("prodImage: {}",saveReviewFormDto.getProdImage());
+
+        return saveReviewFormDto;
     }
 }

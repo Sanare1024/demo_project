@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -35,6 +36,7 @@ public class OrderController {
     private final OrderService orderService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+
     //[0] 장바구니에서 물품담고 그 중 살거 체크박스 해서 구매하기 버튼 클릭 / cart부분
     //[1] 주문페이지 - 여기서 기본오더 생성하고 배송지 입력, 상품리스트 보여줌,
     //    -> 기본오더 생성하면서 재고 확인
@@ -49,7 +51,7 @@ public class OrderController {
         //ToDo 장바구니에서 체크한 제품리스트 받아와서 서비스에서 총금액 계산해서 orderDetail(지금은 index)에 넘기기
 
         orderReq.setProductList(new ArrayList<>());
-        orderReq.getProductList().add(new OrderProduct(1, "상품1",3000, 2, "https://media.istockphoto.com/id/148423285/ko/%EB%B2%A1%ED%84%B0/%ED%8A%9C%EB%B8%8C-%ED%99%94%EC%9E%A5%ED%92%88.jpg?s=1024x1024&w=is&k=20&c=YhO1DSPfA3NiK0uDo2nbmSjodN0z35lRuKR-DESSAZA="));
+        orderReq.getProductList().add(new OrderProduct(1, "상품1", 3000, 2, "https://media.istockphoto.com/id/148423285/ko/%EB%B2%A1%ED%84%B0/%ED%8A%9C%EB%B8%8C-%ED%99%94%EC%9E%A5%ED%92%88.jpg?s=1024x1024&w=is&k=20&c=YhO1DSPfA3NiK0uDo2nbmSjodN0z35lRuKR-DESSAZA=", 123));
 
         OrderPrepare orderPrepare = orderService.createOrder(orderReq);
 
@@ -102,4 +104,119 @@ public class OrderController {
         userRepository.save(user1);
         productRepository.save(product1);
     }*/
+
+/*
+    // ================================= 재령 파트 =================================
+
+    @ResponseBody
+    @GetMapping("/history")
+    public ResponseEntity<List<OrderDto>> getOrderHistory(@RequestParam("memberId") Long memberId) {
+        List<OrderDto> orderList = orderService.getOrderListByMemberId(memberId);
+        return ResponseEntity.ok(orderList);
+    }
+
+    // 배송 조회 API 호출
+    *//*@ResponseBody
+    @PostMapping("/trackingInfo")
+    public ResponseEntity<?> trackDelivery(@RequestParam String waybillCode) {
+        try {
+            Object trackingInfo = deliveryService.getTrackingInfo(waybillCode);
+            return ResponseEntity.ok(trackingInfo);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("배송 조회 오류");
+        }
+    }*//*
+
+    // 상태별 주문 조회 (취소, 교환, 환불)
+    @ResponseBody
+    @GetMapping("/status/filter")
+    public ResponseEntity<List<OrderDto>> getOrdersByStatus(@RequestParam("statusType") String statusType) {
+        try {
+            List<Order> orders;
+
+            // 상태에 맞는 주문 내역 조회
+            if ("all".equalsIgnoreCase(statusType)) {
+                // "all"일 경우 모든 주문을 반환
+                orders = orderService.getAllOrders();
+            } else {
+                switch (statusType.toLowerCase()) {
+                    case "cancel":
+                        orders = orderService.getOrdersByStatus("취소");
+                        break;
+                    case "exchange":
+                        orders = orderService.getOrdersByStatus("교환");
+                        break;
+                    case "refund":
+                        orders = orderService.getOrdersByStatus("환불");
+                        break;
+                    case "return":
+                        orders = orderService.getOrdersByStatus("반품");
+                        break;
+                    default:
+                        return ResponseEntity.status(400).body(null);  // 잘못된 상태Type 처리
+                }
+            }
+
+            List<OrderDto> orderDtos = orderService.convertToDtoList(orders);  // DTO로 변환
+            return ResponseEntity.ok(orderDtos);  // 상태별 주문 내역 반환
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);  // 오류 발생 시 null 반환
+        }
+    }
+
+
+
+    // 모든 주문 조회 (all 상태 처리)
+    @ResponseBody
+    @GetMapping("/status/all")
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        try {
+            List<Order> orders = orderService.getAllOrders();  // 모든 주문 조회
+            List<OrderDto> orderDtos = orderService.convertToDtoList(orders);
+            return ResponseEntity.ok(orderDtos);  // List<OrderDto> 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);  // 오류 발생 시 null 반환
+        }
+    }
+
+    // 취소
+    @ResponseBody
+    @PostMapping("/cancel/{orderId}")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
+        try {
+            // 주문 취소 가능 상태 체크 후 처리
+            orderService.cancelOrder(orderId);
+            return ResponseEntity.ok("주문이 취소되었습니다.");
+        } catch (Exception e) {
+            // 예외가 발생하면 메시지를 반환
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+
+    // 교환
+    @ResponseBody
+    @PostMapping("/exchange/{orderId}")
+    public ResponseEntity<?> exchangeOrder(@PathVariable Long orderId) {
+        try {
+            orderService.exchangeOrder(orderId); // 교환 로직
+            return ResponseEntity.ok("주문이 교환되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage()); // 예외
+        }
+    }
+
+    // 환불
+    @ResponseBody
+    @PostMapping("/refund/{orderId}")
+    public ResponseEntity<?> refundOrder(@PathVariable Long orderId) {
+        try {
+            orderService.refundOrder(orderId); // 환불 로직
+            return ResponseEntity.ok("주문이 환불되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage()); // 예외
+        }
+    }
+    */
 }

@@ -14,13 +14,4 @@ public class OrderReq {
     private String orderId;
     private long userId; //주문한 회원키
     private List<OrderProduct> productList;
-    //배송관련
-    private long postCode; //우편번호
-    private String address; //받는분 주소
-    private String addressDetail; //주소 뒤 상세주소
-    private long phoneNumber;
-    private String message; //주문 요청사항
-    //결제관련
-    private String paymentMethod; //결제수단
-    private String payStatus; //결제 상태
 }

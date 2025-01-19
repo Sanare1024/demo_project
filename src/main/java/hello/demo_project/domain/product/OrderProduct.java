@@ -13,4 +13,5 @@ public class OrderProduct {
     private long price;
     private long quantity;
     private String imagePath;
+    private long optionId;
 }
