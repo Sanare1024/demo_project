@@ -282,7 +282,7 @@
                             msg += '카드 승인번호 : ' + rsp.apply_num;
                             alert(msg);*/
                             console.log(res)
-                            location.replace(`/order/completeOrder/${orderId}`)
+                            location.replace(`/order/completeOrder/${res}`)
                         }).catch(function(error) {
                             alert("주문정보 저장 실패");
                         });
