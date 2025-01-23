@@ -5,6 +5,7 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import hello.demo_project.domain.order.*;
 import hello.demo_project.domain.payHistory.PaymentHistory;
+import hello.demo_project.domain.payHistory.PaymentHistoryDto;
 import hello.demo_project.domain.product.OrderProduct;
 import hello.demo_project.domain.product.Product;
 import hello.demo_project.domain.product.ProductRepository;
@@ -13,6 +14,7 @@ import hello.demo_project.domain.user.UserRepository;
 import hello.demo_project.exception.DataNotFoundException;
 import hello.demo_project.exception.OutOfStockException;
 import hello.demo_project.service.OrderService;
+import hello.demo_project.service.PaymentHistoryService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final PaymentHistoryService paymentHistoryService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
@@ -70,19 +73,25 @@ public class OrderController {
 
     //결제 완료
     @PostMapping("/donePayment")
-    public String processOrder(@RequestBody OrderResult orderResult, Model model) { //내 니즈에 맞춰서 형태를 새로 만들어서
+    public ResponseEntity<String> processOrder(@RequestBody OrderResult orderResult) { //내 니즈에 맞춰서 형태를 새로 만들어서
         // 주문 정보를 로그에 출력
         log.info("Received orders: {}", orderResult.toString());
         // 성공적으로 받아들였다는 응답 반환
         PaymentHistory paymentHistory = orderService.completeOrder(orderResult);
         String orderId = paymentHistory.getOrderId();
-        return "redirect:completeOrder/" + orderId;
+        log.info(orderId);
+        log.info("process");
+        return ResponseEntity.ok(orderId);
     }
 
     @GetMapping("/completeOrder/{orderId}")
-    public String completeOrder (@PathVariable String orderId, Model model) {
-        OrderDto orderDto = orderService.getOrder(orderId);
-        model.addAttribute("orderDto", orderDto);
+    public String completeOrder (@PathVariable String orderId, Model model) throws DataNotFoundException {
+        log.info(orderId);
+        log.info("complete");
+        OrderCompleted completedDto = orderService.getOrder(orderId);
+        PaymentHistoryDto paymentHistoryDto =  paymentHistoryService.getPaymentHistory(orderId);
+        model.addAttribute("completedDto", completedDto);
+        model.addAttribute("paymentHistory", paymentHistoryDto);
         return "orderComplete";
     }
 

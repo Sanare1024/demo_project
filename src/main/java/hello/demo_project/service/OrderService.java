@@ -176,126 +176,20 @@ public class OrderService {
         }
     }
 
-    public OrderDto getOrder(String orderId) {
+    public OrderCompleted getOrder(String orderId) throws DataNotFoundException {
         Order order = orderRepository.findOrderByOrderId(orderId);
+        List<Order> orderList = orderRepository.findOrdersByOrderId(orderId);
+        log.info("orderList : {}", orderList);
 
-        log.info("order : {}", order);
+        List<OrderProduct> productList = new ArrayList<>();
+        for (Order orders : orderList) {
+            Product product = productRepository.getProductByProductId(orders.getProductId())
+                    .orElseThrow(() -> new DataNotFoundException("product not found"));
 
-        OrderDto orderDto = new OrderDto(
-                order.getOrderNumber(), order.getOrderId(), order.getProductId(), order.getProductName(),
-                order.getProductQuantity(), order.getUserId(), order.getOptionId(), order.getPostCode(), order.getAddress(),
-                order.getAddressDetail(), order.getPhoneNumber(), order.getMessage(), order.getOrderAt(),
-                order.getPaymentMethod(), order.getOrderStatus(), order.getImpUid(), order.getIsReview()
-        );
-
-        return  orderDto;
+            productList.add(new OrderProduct(orders.getProductId(), orders.getProductName(), product.getPrice(),
+                    orders.getProductQuantity(), product.getImage_path(), orders.getOptionId()));
+        }
+        return  new OrderCompleted(orderId, "recipientName", "카카오 페이", order.getUserId(),productList);
     }
     // 여기까지 현준
-/*
-
-    // ================================= 혜은 파트 =================================
-
-    public void updateIsReview(Long orderNumber, char isReview) {
-        Order order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new IllegalArgumentException("order not found"));
-
-        order.setIsReview(isReview);
-        orderRepository.save(order);
-    }
-
-    // ================================= 재령 파트 =================================
-
-    // 전체 주문 내역 조회
-    public List<OrderDto> getOrderListByMemberId(Long userId) {
-        List<Order> orders = orderRepository.findOrdersByUserId(userId);
-        return convertToDtoList(orders);
-    }
-
-    // 상태에 따른 주문 목록 조회
-    public List<Order> getOrdersByStatus(String status) {
-        return orderRepository.findOrdersByOrderStatus(status);  // 상태별 주문 목록 조회
-    }
-
-    public List<OrderDto> convertToDtoList(List<Order> orders) {
-        return orders.stream().map(order -> new OrderDto(
-                order.getOrderNumber(),
-                order.getOrderId(),
-                order.getProductId(),
-                order.getProductName(),
-                order.getProductQuantity(),
-                order.getUserId(),
-                order.getOptionId(),
-                order.getPostCode(),
-                order.getAddress(),
-                order.getAddressDetail(),
-                order.getPhoneNumber(),
-                order.getMessage(),
-                order.getOrderAt(),
-                order.getPaymentMethod(),
-                order.getOrderStatus(),
-                order.getImpUid(),
-                order.getIsReview()
-                */
-/*order.getDelivery() != null ? order.getDelivery().getWaybillCode() : null*//*
-  //이거 필요한지 확인
-        )).collect(Collectors.toList());
-    }
-
-    // 취소
-    public void cancelOrder(Long orderId) {
-        // 주문을 가져오기
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
-
-        // 취소 가능한 상태 확인 (주문접수 또는 결제완료 상태에서만 취소 가능)
-        if (!"주문접수".equals(order.getOrderStatus()) && !"결제완료".equals(order.getOrderStatus())) {
-            throw new IllegalArgumentException("현재 상태에서는 취소할 수 없습니다.");
-        }
-
-        // 주문 상태를 '취소'로 변경
-        order.setStatus("취소");
-
-        // 변경된 주문 상태를 데이터베이스에 반영
-        orderRepository.save(order);
-    }
-
-
-    // 교환
-    public void exchangeOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
-
-        // 교환은 '배송완료' 상태에서만 가능
-        if (!"배송완료".equals(order.getOrderStatus())) {
-            throw new IllegalArgumentException("배송 완료된 주문만 교환할 수 있습니다.");
-        }
-
-        // 상태를 '교환'으로 변경
-        order.setStatus("교환");
-
-        // 변경된 주문 상태를 데이터베이스에 반영
-        orderRepository.save(order);
-    }
-
-    // 환불
-    public void refundOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
-
-        // 환불은 '배송완료' 상태에서만 가능
-        if (!"배송완료".equals(order.getOrderStatus())) {
-            throw new IllegalArgumentException("배송 완료된 주문만 환불할 수 있습니다.");
-        }
-
-        // 상태를 '환불'로 변경
-        order.setStatus("환불");
-
-        // 변경된 주문 상태를 데이터베이스에 반영
-        orderRepository.save(order);
-    }
-
-
-    // 모든 주문 조회
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
-*/
-
 }

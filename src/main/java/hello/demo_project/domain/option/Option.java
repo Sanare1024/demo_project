@@ -25,7 +25,7 @@ public class Option {
     @JoinColumn(name = "optionCategoryId", nullable = false)
     private OptionCategory optionCategory;
 
-    private String content;
+    private String content;/*
 
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProdOption> prodOptions = new ArrayList<>();
@@ -34,5 +34,5 @@ public class Option {
     private List<Cart> carts = new ArrayList<>();
 
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();*/
 }

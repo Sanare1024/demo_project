@@ -44,4 +44,15 @@ public class PaymentHistoryService {
 
         return PaymentHistoryDtoList;
     }
+
+    public PaymentHistoryDto getPaymentHistory(String orderId) {
+        PaymentHistory paymentHistory = paymentHistoryRepository.findPaymentHistoriesByOrderId(orderId);
+
+        log.info("paymentHistory : {}",paymentHistory);
+
+        return new PaymentHistoryDto(paymentHistory.getPaymentId(), paymentHistory.getOrderId(), paymentHistory.getTotalPrice(),
+                paymentHistory.getBankCode(), paymentHistory.getBankName(), paymentHistory.getOrderAt(), paymentHistory.getPayStatus(),
+                paymentHistory.getUsedPoint());
+    }
+
 }
